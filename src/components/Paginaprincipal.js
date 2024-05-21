@@ -4,7 +4,7 @@ import "../assets/css/Cursosniveles.css";
 import "../assets/css/Paginalniveles.css";
 import BurguerButton from "./menudesple";
 import IdenUsuario from "./idenusuario";
-
+import fondoImage from "../assets/img/laboratorio.jpg"; // Importa la imagen de fondo
 
 const Paginaprincipal = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,9 +24,9 @@ const Paginaprincipal = ({ userId }) => {
   }, []);
 
   return (
-    <div>
+    <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
       <nav>
-      <div className="barra">
+        <div className="barra">
           <h1 className="elemento">SELECCIONA EL NIVEL ACADEMICO</h1>
           <BurguerButton isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
@@ -36,37 +36,19 @@ const Paginaprincipal = ({ userId }) => {
         <Link to="/Politica" className="politicas">Politicas de privacidad</Link>
         <Link to="/" className="enlace-cerrar">Cerrar sesión</Link>
       </div>
-      <div className="cuadro-container" style={containerStyle}>
-        <Link to="/Infantil" className="cuadros infantil" style={cuadroStyle}>
+      <div className="cuadro-container">
+        <Link to="/Infantil" className="cuadros infantil">
           <div className="medio">INFANTIL</div>
         </Link>
-        <Link to="/Primaria" className="cuadros primaria" style={cuadroStyle}>
+        <Link to="/Primaria" className="cuadros primaria">
           <div className="medio">PRIMARIA</div>
         </Link>
-        <Link to="/Secundaria" className="cuadros secundaria" style={cuadroStyle}>
+        <Link to="/Secundaria" className="cuadros secundaria">
           <div className="medio">SECUNDARIA</div>
         </Link>
-        <Link to="/Listaexperimentos/primaria/5" style={{ textDecoration: "none", color: "white", fontSize: "24px", fontWeight: "bold" }}>5</Link>
       </div>
     </div>
   );
 };
 
 export default Paginaprincipal;
-
-const cuadroStyle = {
-  padding: "10px",
-  borderRadius: "50px",
-  backgroundColor: "rgb(120,168,128)",
-  textAlign: "center",
-  display: "inline-block",
-  textDecoration: "none",
-  color: "white",
-  fontSize: "24px",
-  fontWeight: "bold",
-};
-
-const containerStyle = {
-  display: "flex",
-  justifyContent: "space-around",
-};
