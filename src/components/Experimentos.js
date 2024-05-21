@@ -26,6 +26,7 @@ function Experimento() {
       }
     };
 
+    
     fetchExperimento();
   }, [id]);
 
