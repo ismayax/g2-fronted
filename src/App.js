@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './components/firebaseConfig'; // Asegúrate de que la ruta sea correcta
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Listaexperimentos from './components/Listaexperimentos';
 import Login from './components/Login';
 import Paginaprincipal from './components/Paginaprincipal';
@@ -20,20 +19,31 @@ import Contactenos from './components/Contactenos';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   useEffect(() => {
+    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('User logged in:', user);
+      } else {
+        console.log('No user logged in');
+      }
       setUser(user);
+      setLoading(false); // Cambia el estado de carga una vez se determina el estado de autenticación
     });
     return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    return <div>Cargando...</div>; // Mostrar un indicador de carga
+  }
 
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/Paginaprincipal" /> : <Login />} />
       <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
       <Route path="/Login" element={<Login />} />
-      <Route path= "/Contactenos" element={<Contactenos />} />
       <Route path='/Primaria' element={<Primaria />} />
       <Route path='/Listaexperimentos/infantil/:grupo' element={<Listaexperimentos />} />
       <Route path='/Listaexperimentos/primaria/:grupo' element={<Listaexperimentos />} />
