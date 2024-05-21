@@ -15,6 +15,7 @@ import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
+import Contactenos from './components/Contactenos';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,16 +44,17 @@ function App() {
       <Route path="/" element={user ? <Navigate to="/Paginaprincipal" /> : <Login />} />
       <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
       <Route path="/Login" element={<Login />} />
-      <Route path="/Primaria" element={<Primaria />} />
-      <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
-      <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
-      <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
-      <Route path="/experimento/:id" element={<Experimento />} />
-      <Route path="/Infantil" element={<Infantil />} />
-      <Route path="/secundaria" element={<Secundaria />} />
-      <Route path="/registro" element={<Registro />} />
-      <Route path="/contrasena" element={<Contrasena />} />
-      <Route path="/actividades/:id" element={<DetalleExperimento />} />
+      <Route path='/Primaria' element={<Primaria />} />
+      <Route path='/Listaexperimentos/infantil/:grupo' element={<Listaexperimentos />} />
+      <Route path='/Listaexperimentos/primaria/:grupo' element={<Listaexperimentos />} />
+      <Route path='/Listaexperimentos/secundaria/:grupo' element={<Listaexperimentos />} />
+      <Route path='/Primaria' element={<Primaria />} />
+      <Route path='/experimento/:id' element={<Experimento />} />
+      <Route path='/Infantil' element={<Infantil />} />
+      <Route path='/secundaria' element={<Secundaria />} />
+      <Route path='/registro' element={<Registro />} />
+      <Route path='/contrasena' element={<Contrasena />} />
+      <Route path='/actividades/:id' element={<DetalleExperimento />} />
       <Route path="/suscripcion" element={<PlanesSuscripcion />} />
       <Route path="/pago" element={<Pago />} />
       <Route path="/Politica" element={<Politica />} />
