@@ -5,10 +5,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  position: relative; /* Añadir posición relativa */
 }
 
 .barra {
-  width: 100%; /* Asegura que la barra ocupa todo el ancho de la pantalla */
+  width: 100%; /* Ocupa toda la pantalla horizontalmente */
   padding: 20px;
   background-color: rgba(51, 51, 51, 0.8); /* Gris 2 con opacidad */
   color: white;
@@ -46,7 +48,7 @@
 
 .cuadro-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Cambiar la dirección a columna */
   align-items: center;
   width: 100%;
   padding: 20px;
@@ -74,4 +76,13 @@
 
 .medio {
   margin-top: 10px;
+}
+
+.galileo-image {
+  position: absolute; /* Posición absoluta para colocar la imagen en la esquina inferior derecha */
+  bottom: 0;
+  right: 0;
+  width: 15%; /* La imagen ocupa media pantalla */
+  height: auto; /* Mantener la proporción de la imagen */
+  margin-right: 7%;
 }

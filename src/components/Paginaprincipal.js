@@ -5,6 +5,7 @@ import "../assets/css/Paginalniveles.css";
 import BurguerButton from "./menudesple";
 import IdenUsuario from "./idenusuario";
 import fondoImage from "../assets/img/laboratorio.jpg"; // Importa la imagen de fondo
+import galileoImage from "../assets/img/galileo3.png"; // Importa la imagen del personaje
 
 const Paginaprincipal = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +48,7 @@ const Paginaprincipal = ({ userId }) => {
           <div className="medio">SECUNDARIA</div>
         </Link>
       </div>
+      <img src={galileoImage} alt="Galileo" className="galileo-image" />
     </div>
   );
 };
