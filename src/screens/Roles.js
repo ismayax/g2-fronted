@@ -8,7 +8,8 @@ function Roles () {
 
     const [isRegistrando, setIsRegistrando] = useState(false);
 
-    async function RegistrarUsuario(){
+    async function RegistrarUsuario(auth, email, password){
+        createUserWithEmailAndPassword(auth, email, password)
 
     }
 
@@ -24,7 +25,7 @@ function Roles () {
        }
        if(isRegistrando){
 
-        RegistrarUsuario()
+        RegistrarUsuario(email, password, rol)
        }else{
 
        }
