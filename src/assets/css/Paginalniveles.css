@@ -56,16 +56,16 @@
 }
 
 .cuadros {
-  padding: 30px;
-  border-radius: 10px;
+  padding: 10px;
+  border-radius: 50px;
   background-color: rgba(121, 169, 129, 0.8); /* Verde de la empresa con opacidad */
   text-align: center;
   text-decoration: none;
   color: white;
   font-size: 2em;
   font-weight: bold;
-  width: 50%; /* Ajusta el ancho según sea necesario */
-  margin: 10px 0; /* Espaciado entre los cuadros */
+  margin: 20px;
+  padding: 30px;  /* Espaciado entre los cuadros */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
 }

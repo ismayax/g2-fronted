@@ -95,6 +95,7 @@ function Experimento() {
             <li key={material} className={styles.materialItem}>
               <span style={{ color: 'black' }}>{material}</span>
             </li>
+          
           ))}
         </ul>
       </div>,

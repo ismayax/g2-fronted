@@ -1,0 +1,63 @@
+.pagina-experimentos-container {
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.barra {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.7); /* Cambia el color de fondo a negro con opacidad */
+  padding: 10px 20px; /* Añade padding para un poco de espacio alrededor de los elementos */
+  box-sizing: border-box;
+  position: fixed; /* Ancla la barra en la parte superior */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Asegura que la barra esté por encima de otros elementos */
+}
+
+.flecha {
+  text-decoration: none;
+  color: #79a981; /* Cambia el color de la flecha a verde */
+  font-size: 24px; /* Ajusta el tamaño de la fuente según sea necesario */
+}
+
+.elemento {
+  color: #79a981; /* Cambia el color del texto a verde */
+  font-size: 24px; /* Ajusta el tamaño de la fuente según sea necesario */
+  margin: 0; /* Elimina el margen por defecto */
+}
+
+.recuadro-container {
+  margin-top: 150px; /* Aumenta el margen superior para bajar el contenedor de botones */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.recuadro {
+  margin: 20px;
+  padding: 30px; /* Alinea con el padding de los botones en Paginaprincipal */
+  border-radius: 50px; /* Alinea con el border-radius de los botones en Paginaprincipal */
+  background-color: rgba(121, 169, 129, 0.8); /* Color de fondo verde con opacidad */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra similar a los botones en Paginaprincipal */
+  transition: transform 0.3s ease-in-out;
+}
+
+.recuadro:hover {
+  transform: scale(1.05);
+}
+
+.link {
+  text-decoration: none;
+  color: white; /* Color de texto blanco */
+  font-size: 20px;
+}

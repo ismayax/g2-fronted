@@ -257,7 +257,14 @@ html, body {
 img {
   width: 250px;
 }
- 
+
+.galileoImage {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  max-width: 150px;
+}
+
 .paso {
   font-size: 24px; /* Tamaño de fuente incrementado para los pasos */
   margin-top: 20px;
