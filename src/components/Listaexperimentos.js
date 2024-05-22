@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
+import fondoImage from "../assets/img/laboratorio.jpg"; // Importa la imagen de fondo
+import "../assets/css/Listaexperimentos.css"; // Importa el nuevo CSS
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
@@ -24,27 +26,24 @@ const Listaexperimentos = () => {
                 console.log("Error al obtener las actividades:", error);
             }
         };
-    
+
         fetchActividades();
     }, [grupo]);
 
     return (
-        <div>
-            <div className="barra">
-                <div className="btn-menu">
-                    <label htmlFor="btn-menu" className="icon-menu"></label>
+        <div className="pagina-experimentos-container" style={{ backgroundImage: `url(${fondoImage})` }}>
+            <nav>
+                <div className="barra">
+                    <Link className="flecha" to="/Paginaprincipal"></Link>
+                    <h1 className="elemento">EXPERIMENTOS</h1>
                 </div>
-                <Link className="flecha" to="/Paginaprincipal"></Link>
-                <h1 className="elemento">EXPERIMENTOS</h1>
-                <div className="lista-enlaces"></div>
-            </div>
+            </nav>
 
             <div className="recuadro-container">
                 {actividades.length > 0 ? (
                     actividades.map((actividad, index) => (
-                        <div key={actividad.id} className="recuadro" style={rectangleStyle}>
-                            {/* Movemos el enlace directamente dentro del área verde */}
-                            <Link to={`/experimento/${actividad.id}`} style={linkStyle}>
+                        <div key={actividad.id} className="recuadro">
+                            <Link to={`/experimento/${actividad.id}`} className="link">
                                 {actividad.nombre}
                             </Link>
                         </div>
@@ -58,19 +57,3 @@ const Listaexperimentos = () => {
 };
 
 export default Listaexperimentos;
-
-const rectangleStyle = {
-    marginBottom: "40px",
-    width: "30%",
-    padding: "30px",
-    borderRadius: "50px",
-    backgroundColor: "rgb(120,168,128)",
-    textAlign: "center",
-    display: "inline-block",
-};
-
-const linkStyle = {
-    textDecoration: "none",
-    color: "white",
-    fontSize: "24px",
-};

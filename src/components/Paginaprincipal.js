@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
-import "../assets/css/Paginalniveles.css";
 import BurguerButton from "./menudesple";
 import IdenUsuario from "./idenusuario";
 import fondoImage from "../assets/img/laboratorio.jpg"; // Importa la imagen de fondo
