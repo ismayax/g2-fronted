@@ -27,7 +27,7 @@ const Paginaprincipal = ({ userId }) => {
   return (
     <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
       <nav>
-        <div className="barra">
+        <div className="barra"> 
           <h1 className="elemento">SELECCIONA EL NIVEL ACADEMICO</h1>
           <BurguerButton isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>

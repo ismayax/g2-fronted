@@ -25,7 +25,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
+}  
 
 .navigationMuteContainer {
   position: absolute;
@@ -100,11 +100,13 @@
   right: 10px; /* Ajusta esto según sea necesario para el espacio desde la derecha */
 }
 
-.galileoImage {
-  position: absolute;
-  bottom: 10px; /* Ajusta esto según sea necesario */
-  right: 10px; /* Ajusta esto según sea necesario */
-  width: 100px; /* Ajusta el tamaño según sea necesario */
+.galileo-image {
+  position: absolute; /* Posición absoluta para colocar la imagen en la esquina inferior derecha */
+  bottom: 0;
+  right: 0;
+  width: 15%; /* La imagen ocupa media pantalla */
+  height: auto; /* Mantener la proporción de la imagen */
+  margin-right: 7%;
 }
 
 .muteButton {
@@ -255,14 +257,7 @@ html, body {
 img {
   width: 250px;
 }
-
-.galileoImage {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  max-width: 150px;
-}
-
+ 
 .paso {
   font-size: 24px; /* Tamaño de fuente incrementado para los pasos */
   margin-top: 20px;
