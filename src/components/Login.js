@@ -4,7 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import styles from "../assets/css/Login.module.css";
 import Logo from "../assets/img/Logo_educación.png";
 
-const Login = () => {
+const Login = ({ setHasInteracted }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,6 +13,7 @@ const Login = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setHasInteracted(true); // Marca que el usuario ha interactuado
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
@@ -65,3 +66,4 @@ const Login = () => {
 };
 
 export default Login;
+

@@ -15,46 +15,40 @@ import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
-import Contactenos from './components/Contactenos';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [loading, setLoading] = useState(true);
+  const [hasInteracted, setHasInteracted] = useState(false); // Nuevo estado
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('User logged in:', user);
-      } else {
-        console.log('No user logged in');
-      }
       setUser(user);
-      setLoading(false); // Cambia el estado de carga una vez se determina el estado de autenticación
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
   if (loading) {
-    return <div>Cargando...</div>; // Mostrar un indicador de carga
+    return <div>Cargando...</div>;
   }
 
   return (
     <Routes>
-      <Route path="/" element={user ? <Navigate to="/Paginaprincipal" /> : <Login />} />
+      <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to="/Paginaprincipal" /> : <Login setHasInteracted={setHasInteracted} />)} />
       <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
-      <Route path="/Login" element={<Login />} />
-      <Route path='/Primaria' element={<Primaria />} />
-      <Route path='/Listaexperimentos/infantil/:grupo' element={<Listaexperimentos />} />
-      <Route path='/Listaexperimentos/primaria/:grupo' element={<Listaexperimentos />} />
-      <Route path='/Listaexperimentos/secundaria/:grupo' element={<Listaexperimentos />} />
-      <Route path='/Primaria' element={<Primaria />} />
-      <Route path='/experimento/:id' element={<Experimento />} />
-      <Route path='/Infantil' element={<Infantil />} />
-      <Route path='/secundaria' element={<Secundaria />} />
-      <Route path='/registro' element={<Registro />} />
-      <Route path='/contrasena' element={<Contrasena />} />
-      <Route path='/actividades/:id' element={<DetalleExperimento />} />
+      <Route path="/login" element={<Login setHasInteracted={setHasInteracted} />} />
+      <Route path="/Primaria" element={<Primaria />} />
+      <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
+      <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
+      <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
+      <Route path="/experimento/:id" element={<Experimento />} />
+      <Route path="/Infantil" element={<Infantil />} />
+      <Route path="/secundaria" element={<Secundaria />} />
+      <Route path="/registro" element={<Registro />} />
+      <Route path="/contrasena" element={<Contrasena />} />
+      <Route path="/actividades/:id" element={<DetalleExperimento />} />
       <Route path="/suscripcion" element={<PlanesSuscripcion />} />
       <Route path="/pago" element={<Pago />} />
       <Route path="/Politica" element={<Politica />} />
