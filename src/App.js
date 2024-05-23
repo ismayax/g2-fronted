@@ -16,6 +16,10 @@ import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
+import SuperuserDashboard from './components/SuperuserDashboard';
+import UserDashboard from './components/UserDashboard';
+
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,8 +58,10 @@ function App() {
       <Route path="/Politica" element={<Politica />} />
       <Route path="/Terminos" element={<Terminos />} />
       <Route path="/Contactenos" element={<Contactenos />} />
+      <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
+      <Route path="/user-dashboard" element={<UserDashboard />} />
 
-
+      
     </Routes>
   );
 }
