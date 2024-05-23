@@ -10,12 +10,16 @@
 .barra {
   width: 100%;
   padding: 20px;
-  background-color: rgba(51, 51, 51, 0.8);
-  color: #f4ecd8; 
+  background-color: rgba(51, 51, 51, 0.8); /* Gris 2 con opacidad */
+  color: white;
+  text-align: center;
   box-sizing: border-box;
-  display: flex; 
-  justify-content: center;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  position: fixed; /* Fijar la barra en la parte superior */
+  top: 0; /* Posicionar la barra en la parte superior */
+  z-index: 1000; /* Asegurar que esté por encima de otros elementos */
 }
 
 .elemento {

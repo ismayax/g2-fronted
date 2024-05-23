@@ -3,26 +3,31 @@
   background-size: cover;
   background-position: center;
   display: flex;
-  flex-direction: column; 
-  position: relative; 
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente */
+  align-items: center;
+  position: relative; /* Asegura que el contenido debajo de la barra esté correctamente posicionado */
 }
 
 .barra {
   width: 100%;
   padding: 20px;
-  background-color: rgba(51, 51, 51, 0.8);
+  background-color: rgba(51, 51, 51, 0.8); /* Gris 2 con opacidad */
+  color: white;
+  text-align: center;
   box-sizing: border-box;
-  display: flex; 
-  justify-content: center;
+  display: flex;
+  justify-content: space-between; /* Espaciado entre los elementos */
   align-items: center;
+  position: fixed; /* Fija la barra en la parte superior */
+  top: 0; /* Coloca la barra en la parte superior */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
 }
 
 .elemento {
   margin: 0;
   font-size: 2.5em;
-  color: #f4ecd8; 
-  padding-left: 8px;
-  width: 100%;
+  color: #f4ecd8; /* Ajusta el color del texto */
 }
 
 .menu-lateral {
@@ -34,6 +39,7 @@
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
 }
+
 
 .menu-lateral.open {
   transform: translateX(0);

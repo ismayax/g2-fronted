@@ -12,7 +12,7 @@ const Infantil = () => {
       <nav>
         <div className="barra">
           <Link className="flecha" to="/Paginaprincipal"></Link>
-          <h1 className="elemento">  SELECCIONA EL CURSO</h1>
+          <h1 className="elemento">SELECCIONA EL CURSO</h1>
         </div>
       </nav>
       <div className="cuadro-container">
@@ -23,6 +23,7 @@ const Infantil = () => {
       <img src={galileoImage} alt="Galileo" className="galileo-image" />
     </div>
   );
+  
 };
 
 export default Infantil;
