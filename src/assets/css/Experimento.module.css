@@ -25,6 +25,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* Agregar posición relativa */
 }  
 
 .navigationMuteContainer {
@@ -276,6 +277,13 @@ img {
   padding: 15px;
   border-radius: 10px;
   margin-top: 10px;
+}
+
+.backLink {
+  position: absolute; /* Agregar posición absoluta */
+  top: 20px; /* Ajustar la distancia desde arriba */
+  left: 20px; /* Ajustar la distancia desde la izquierda */
+  z-index: 1000; /* Asegurar que esté por encima de otros elementos */
 }
 
 @media (max-width: 768px) {

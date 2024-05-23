@@ -3,8 +3,8 @@
   background-size: cover;
   background-position: center;
   display: flex;
-  flex-direction: column; 
-  position: relative; 
+  flex-direction: column;
+  position: relative;
 }
 
 .barra {
@@ -25,7 +25,7 @@
 .elemento {
   margin: 0;
   font-size: 2.5em;
-  color: #f4ecd8; 
+  color: #f4ecd8;
 }
 
 .flecha {
@@ -37,7 +37,7 @@
 
 .recuadroContainer {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   width: 100%;
   padding: 20px;
@@ -49,7 +49,7 @@
   width: 70%;
   padding: 20px;
   border-radius: 10px;
-  background-color: rgba(121, 169, 129, 0.8); 
+  background-color: rgba(121, 169, 129, 0.8);
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
@@ -61,7 +61,20 @@
 
 .link {
   text-decoration: none;
-  color: #333333; 
+  color: #333333;
   font-size: 2em;
   font-weight: bold;
 }
+
+
+.flecha {
+  text-decoration: none;
+  font-size: 1.5em;
+  color: #f4ecd8;
+  padding: 10px;
+  position: absolute; /* Posiciona la flecha de forma absoluta */
+  top: 20px; /* Ajusta la posición desde la parte superior */
+  left: 20px; /* Ajusta la posición desde el lado izquierdo */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+

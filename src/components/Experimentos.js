@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import styles from "../assets/css/Experimento.module.css"; 
@@ -7,7 +7,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import galileoImage from '../assets/img/galileo3.png';
-import { FaVolumeMute, FaVolumeUp } from 'react-icons/fa'; 
+import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa'; // Importa el icono de flecha hacia atrás
 
 function Experimento() {
   const [experimento, setExperimento] = useState(null);
@@ -95,7 +95,6 @@ function Experimento() {
             <li key={material} className={styles.materialItem}>
               <span style={{ color: 'black' }}>{material}</span>
             </li>
-          
           ))}
         </ul>
       </div>,
@@ -128,55 +127,54 @@ function Experimento() {
           <h3>Preguntas Finales para Conclusión:</h3>
           <ul>
             {experimento.preguntas_finales_conclusion.map(pregunta => (
-              <li key={pregunta}>{pregunta}</li>
-            ))}
-          </ul>
-        </div>
-        <p className={styles.explicacion}>{experimento.explicacion}</p>
-      </div>
-    );
-    return slides;
-  };
-
-  const nextSlide = () => {
-    sliderRef.current.slickNext();
-  };
-
-  const prevSlide = () => {
-    sliderRef.current.slickPrev();
-  };
-
-  return (
-    <div className={styles.experimentoContainer}>
-      <div className={styles.sliderContainer}>
-        <Slider
-          ref={sliderRef}
-          dots={true}
-          infinite={true}
-          speed={500}
-          slidesToShow={1}
-          slidesToScroll={1}
-          arrows={false} // Desactivar las flechas
-          beforeChange={handleSlideChange}
-          afterChange={handleAfterSlideChange}
-        >
-          {renderSlides()}
-        </Slider>
-        <div className={styles.navigationMuteContainer}>
-          <button onClick={toggleMute} className={styles.muteButton}>
-            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-          </button>
-          <div className={styles.controls}>
-            <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
-            <button onClick={nextSlide} className={styles.controlButton} disabled={pasoActual === experimento.Pasos.length + 3}>Siguiente</button>
-          </div>
-        </div>
-      </div>
-      {showGalileo && <img src={galileoImage} alt="Galileo" className={styles.galileoImage} />}
+          <li key={pregunta}>{pregunta}</li>
+        ))}
+      </ul>
     </div>
-  );
-  
-  
+    <p className={styles.explicacion}>{experimento.explicacion}</p>
+  </div>
+);
+return slides;
+};
+
+const nextSlide = () => {
+  sliderRef.current.slickNext();
+};
+
+const prevSlide = () => {
+  sliderRef.current.slickPrev();
+};
+
+return (
+  <div className={styles.experimentoContainer}>
+    <Link to="/" className={styles.backLink}><FaArrowLeft /></Link> {/* Aquí agregamos la flecha */}
+    <div className={styles.sliderContainer}>
+      <Slider
+        ref={sliderRef}
+        dots={true}
+        infinite={true}
+        speed={500}
+        slidesToShow={1}
+        slidesToScroll={1}
+        arrows={false} // Desactivar las flechas
+        beforeChange={handleSlideChange}
+        afterChange={handleAfterSlideChange}
+      >
+        {renderSlides()}
+      </Slider>
+      <div className={styles.navigationMuteContainer}>
+        <button onClick={toggleMute} className={styles.muteButton}>
+          {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+        </button>
+        <div className={styles.controls}>
+          <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
+          <button onClick={nextSlide} className={styles.controlButton} disabled={pasoActual === experimento.Pasos.length + 3}>Siguiente</button>
+        </div>
+      </div>
+    </div>
+    {showGalileo && <img src={galileoImage} alt="Galileo" className={styles.galileoImage} />}
+  </div>
+);
 }
-  
+
 export default Experimento;
