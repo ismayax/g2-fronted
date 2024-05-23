@@ -257,7 +257,7 @@ html, body {
   position: absolute;
   bottom: 10px;
   right: 200px;
-  width: 250px; /* Cambié el valor a 200px para aumentar el tamaño */
+  width: 13%; /* Cambié el valor a 200px para aumentar el tamaño */
   height: auto;
 }
 
