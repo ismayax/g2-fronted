@@ -15,7 +15,7 @@ import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
-
+import Contactenos from './components/Contactenos';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,6 +53,9 @@ function App() {
       <Route path="/pago" element={<Pago />} />
       <Route path="/Politica" element={<Politica />} />
       <Route path="/Terminos" element={<Terminos />} />
+      <Route path="/Contactenos" element={<Contactenos />} />
+
+
     </Routes>
   );
 }
