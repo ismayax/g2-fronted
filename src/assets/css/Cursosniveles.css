@@ -10,19 +10,26 @@
 }
 
 .barra {
-  width: 100%;
+  width: auto; /* Cambiar el ancho a automático */
+  max-width: 100%; /* Establecer el ancho máximo */
   padding: 20px;
   background-color: rgba(51, 51, 51, 0.8); /* Gris 2 con opacidad */
   color: white;
   text-align: center;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start; /* Alinear la barra en el lado izquierdo */
   align-items: center;
   position: fixed; /* Fijar la barra en la parte superior */
   top: 0; /* Posicionar la barra en la parte superior */
+  left: 0; /* Alinear la barra en el borde izquierdo */
+  right: 0; /* Alinear la barra en el borde derecho */
+  margin-left: auto; /* Establecer margen izquierdo automático */
+  margin-right: auto; /* Establecer margen derecho automático */
   z-index: 1000; /* Asegurar que esté por encima de otros elementos */
 }
+
+
 
 .elemento {
   margin: 0;

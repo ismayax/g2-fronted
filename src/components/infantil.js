@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
-import "../assets/css/Paginalniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorio.jpg";
 import galileoImage from "../assets/img/galileo3.png"; // Importar la imagen del personaje
