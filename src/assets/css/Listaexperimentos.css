@@ -13,29 +13,29 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.7); /* Cambia el color de fondo a negro con opacidad */
-  padding: 10px 20px; /* Añade padding para un poco de espacio alrededor de los elementos */
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
   box-sizing: border-box;
-  position: fixed; /* Ancla la barra en la parte superior */
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000; /* Asegura que la barra esté por encima de otros elementos */
+  z-index: 1000;
 }
 
 .flecha {
   text-decoration: none;
-  color: #79a981; /* Cambia el color de la flecha a verde */
-  font-size: 24px; /* Ajusta el tamaño de la fuente según sea necesario */
+  color: #79a981;
+  font-size: 24px;
 }
 
 .elemento {
-  color: #79a981; /* Cambia el color del texto a verde */
-  font-size: 24px; /* Ajusta el tamaño de la fuente según sea necesario */
-  margin: 0; /* Elimina el margen por defecto */
+  color: #79a981;
+  font-size: 24px;
+  margin: 0;
 }
 
 .recuadro-container {
-  margin-top: 150px; /* Aumenta el margen superior para bajar el contenedor de botones */
+  margin-top: 150px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -44,11 +44,11 @@
 
 .recuadro {
   margin: 20px;
-  padding: 30px; /* Alinea con el padding de los botones en Paginaprincipal */
-  border-radius: 50px; /* Alinea con el border-radius de los botones en Paginaprincipal */
-  background-color: rgba(121, 169, 129, 0.8); /* Color de fondo verde con opacidad */
+  padding: 30px;
+  border-radius: 50px;
+  background-color: rgba(121, 169, 129, 0.8);
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra similar a los botones en Paginaprincipal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
 }
 
@@ -58,6 +58,6 @@
 
 .link {
   text-decoration: none;
-  color: white; /* Color de texto blanco */
+  color: white;
   font-size: 20px;
 }

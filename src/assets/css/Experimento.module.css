@@ -25,7 +25,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
+}  
 
 .navigationMuteContainer {
   position: absolute;
@@ -68,12 +68,10 @@
   margin-right: 10px;
 }
 
-
 .controls {
   display: flex;
   justify-content: space-around;
 }
-
 
 .sliderContainer {
   width: 80%; /* Ajusta esto según sea necesario */
@@ -100,11 +98,13 @@
   right: 10px; /* Ajusta esto según sea necesario para el espacio desde la derecha */
 }
 
-.galileoImage {
-  position: absolute;
-  bottom: 10px; /* Ajusta esto según sea necesario */
-  right: 10px; /* Ajusta esto según sea necesario */
-  width: 100px; /* Ajusta el tamaño según sea necesario */
+.galileo-image {
+  position: absolute; /* Posición absoluta para colocar la imagen en la esquina inferior derecha */
+  bottom: 0;
+  right: 0;
+  width: 15%; /* La imagen ocupa media pantalla */
+  height: auto; /* Mantener la proporción de la imagen */
+  margin-right: 7%;
 }
 
 .muteButton {
@@ -123,7 +123,6 @@
   justify-content: center;
   align-items: center;
 }
-
 
 body {
   margin: 0;
@@ -252,6 +251,9 @@ html, body {
   font-size: 20px; /* Tamaño de fuente incrementado */
 }
 
+img {
+  width: 250px;
+}
 
 .galileoImage {
   position: absolute;
@@ -260,9 +262,6 @@ html, body {
   width: 13%; /* Cambié el valor a 200px para aumentar el tamaño */
   height: auto;
 }
-
-
-
 
 .paso {
   font-size: 24px; /* Tamaño de fuente incrementado para los pasos */
@@ -289,4 +288,3 @@ html, body {
     display: none;
   }
 }
-
