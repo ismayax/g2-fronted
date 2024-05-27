@@ -15,6 +15,7 @@ import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
+import PrivateRoute from "./screens/Rutas";
 
 function App() {
   const [user, setUser] = useState(null);
