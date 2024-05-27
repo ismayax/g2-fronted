@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Importar useNavigate
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import styles from "../assets/css/Experimento.module.css"; 
@@ -7,7 +7,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import galileoImage from '../assets/img/galileo3.png';
-import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa'; // Importa el icono de flecha hacia atrás
+import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa';
 
 function Experimento() {
   const [experimento, setExperimento] = useState(null);
@@ -15,7 +15,8 @@ function Experimento() {
   const [pasoActual, setPasoActual] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const { id } = useParams();
-  const sliderRef = useRef(null); // Referencia al slider
+  const sliderRef = useRef(null);
+  const navigate = useNavigate(); // Obtener el objeto navigate
 
   useEffect(() => {
     const fetchExperimento = async () => { 
@@ -34,7 +35,7 @@ function Experimento() {
 
   const leerTexto = (texto) => {
     if (!isMuted) {
-      window.speechSynthesis.cancel(); // Detener cualquier síntesis en curso
+      window.speechSynthesis.cancel();
       const speech = new SpeechSynthesisUtterance(texto);
       speech.lang = 'es-ES';
       window.speechSynthesis.speak(speech);
@@ -54,18 +55,26 @@ function Experimento() {
         const indexPaso = pasoActual - 3;
         textoALeer = `Paso ${indexPaso + 1}: ${experimento.Pasos[indexPaso]}`;
       } else if (pasoActual === 3 + experimento.Pasos.length) {
-        textoALeer = `Preguntas Finales para Conclusión: ${experimento.preguntas_finales_conclusion.join(', ')}. ${experimento.explicacion}`;
+        textoALeer = `Preguntas Finales para Conclusión: ${experimento.preguntas_finales_conclusion.join(', ')}`;
+      } else if (pasoActual === 4 + experimento.Pasos.length) {
+        textoALeer = `Explicación: ${experimento.explicacion}`;
       }
       leerTexto(textoALeer);
     }
   }, [pasoActual, experimento, isMuted]);
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
 
   if (!experimento) {
     return <div>Cargando...</div>;
   }
 
   const handleSlideChange = (oldIndex, newIndex) => {
-    window.speechSynthesis.cancel(); // Detener cualquier síntesis en curso
+    window.speechSynthesis.cancel();
     setShowGalileo(false);
     setPasoActual(newIndex);
   };
@@ -127,54 +136,64 @@ function Experimento() {
           <h3>Preguntas Finales para Conclusión:</h3>
           <ul>
             {experimento.preguntas_finales_conclusion.map(pregunta => (
-          <li key={pregunta}>{pregunta}</li>
-        ))}
-      </ul>
-    </div>
-    <p className={styles.explicacion}>{experimento.explicacion}</p>
-  </div>
-);
-return slides;
-};
-
-const nextSlide = () => {
-  sliderRef.current.slickNext();
-};
-
-const prevSlide = () => {
-  sliderRef.current.slickPrev();
-};
-
-return (
-  <div className={styles.experimentoContainer}>
-    <Link to="/" className={styles.backLink}><FaArrowLeft /></Link> {/* Aquí agregamos la flecha */}
-    <div className={styles.sliderContainer}>
-      <Slider
-        ref={sliderRef}
-        dots={true}
-        infinite={true}
-        speed={500}
-        slidesToShow={1}
-        slidesToScroll={1}
-        arrows={false} // Desactivar las flechas
-        beforeChange={handleSlideChange}
-        afterChange={handleAfterSlideChange}
-      >
-        {renderSlides()}
-      </Slider>
-      <div className={styles.navigationMuteContainer}>
-        <button onClick={toggleMute} className={styles.muteButton}>
-          {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-        </button>
-        <div className={styles.controls}>
-          <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
-          <button onClick={nextSlide} className={styles.controlButton} disabled={pasoActual === experimento.Pasos.length + 3}>Siguiente</button>
+              <li key={pregunta}>{pregunta}</li>
+            ))}
+          </ul>
         </div>
       </div>
+    );
+    slides.push(
+      <div key="explicacion">
+        <div className={styles.explicacion}>{experimento.explicacion}</div>
+      </div>
+    );
+    return slides;
+  };
+
+  const nextSlide = () => {
+    sliderRef.current.slickNext();
+  };
+
+  const prevSlide = () => {
+    if (pasoActual === 0) {
+      navigate(-1); // Navegar hacia la página anterior en el historial
+    } else {
+      sliderRef.current.slickPrev();
+    }
+  };
+
+  return (
+    <div className={styles.experimentoContainer}>
+      <button onClick={() => navigate(-1)} className={styles.backLink}>
+        <FaArrowLeft />
+      </button>
+      <div className={styles.sliderContainer}>
+        <Slider
+          ref={sliderRef}
+          dots={true}
+          infinite={true}
+          speed={500}
+          slidesToShow={1}
+          slidesToScroll={1}
+          arrows={false}
+          beforeChange={handleSlideChange}
+          afterChange={handleAfterSlideChange}
+        >
+          {renderSlides()}
+        </Slider>
+        <div className={styles.navigationMuteContainer}>
+          <button onClick={toggleMute} className={styles.muteButton}>
+            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+          </button>
+          <div className={styles.controls}>
+            <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
+            <button onClick={nextSlide} className={styles.controlButton}>Siguiente</button>
+          </div>
+        </div>
+      </div>
+      {showGalileo && <img src={galileoImage} alt="Galileo" className={styles.galileoImage} />}
     </div>
-    {showGalileo && <img src={galileoImage} alt="Galileo" className={styles.galileoImage} />}
-  </div>
-);
+  );
 }
 
 export default Experimento;

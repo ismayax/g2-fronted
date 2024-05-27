@@ -1,3 +1,5 @@
+/* Experimento.module.css */
+
 @import url('https://fonts.googleapis.com/css2?family=YourFontFamily:wght@400;700&display=swap');
 
 .experimentoContainer {
@@ -6,11 +8,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../img/laboratorio.jpg');
+  background-image: url('../img/Pizarrainfantil.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  padding: 200px 100px 100px;
+  padding: 15% 15% 0%; /* Reduce the padding */
   box-sizing: border-box;
 }
 
@@ -18,26 +20,16 @@
   color: white;
 }
 
-.experimentoContainer {
-  position: relative;
-  width: 100%;
-  height: 100vh; /* Hace que el contenedor ocupe toda la altura de la ventana */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative; /* Agregar posición relativa */
-}  
-
 .navigationMuteContainer {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
+  bottom: -50%;
+  left: 80%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: calc(100% - 20px);
-  max-width: 800px; /* Ajusta el ancho máximo según sea necesario */
+  max-width: 800px;
 }
 
 .muteButton {
@@ -65,24 +57,24 @@
   transition: background-color 0.3s;
 }
 
-.controlButton:not(:last-child) {
-  margin-right: 10px;
+.controlButton:disabled {
+  background-color: #ccc;
+  cursor: default;
 }
 
-.controls {
-  display: flex;
-  justify-content: space-around;
+.controlButton:not(:disabled):hover {
+  background-color: #567a5f;
 }
 
 .sliderContainer {
-  width: 80%; /* Ajusta esto según sea necesario */
-  height: 80%; /* Ajusta esto según sea necesario */
-  position: relative; /* Necesario para las flechas absolutas */
+  width: 60%; /* Reduced width */
+  height: 60%; /* Reduced height */
+  position: relative;
 }
 
 .slick-prev, .slick-next {
-  position: fixed; /* Cambia a fixed para anclarlas a la pantalla */
-  bottom: 10px; /* Ajusta esto según sea necesario para el espacio desde el fondo */
+  position: fixed;
+  bottom: 10px;
   z-index: 1;
   font-size: 20px;
   background-color: rgba(255, 255, 255, 0.7);
@@ -92,24 +84,24 @@
 }
 
 .slick-prev {
-  left: 10px; /* Ajusta esto según sea necesario para el espacio desde la izquierda */
+  left: 10px;
 }
 
 .slick-next {
-  right: 10px; /* Ajusta esto según sea necesario para el espacio desde la derecha */
+  right: 10px;
 }
 
-.galileo-image {
-  position: absolute; /* Posición absoluta para colocar la imagen en la esquina inferior derecha */
+.galileoImage {
+  position: absolute;
   bottom: 0;
-  right: 0;
-  width: 15%; /* La imagen ocupa media pantalla */
-  height: auto; /* Mantener la proporción de la imagen */
-  margin-right: 7%;
+  right: 7%;
+  width: 17%; /* Increased width */
+  height: auto;
+  margin-right: 3%; /* Adjust margin as needed */
 }
 
 .muteButton {
-  position: fixed; /* Cambia a fixed para anclarlo a la pantalla */
+  position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -148,7 +140,7 @@ html, body {
 
 .experimentoTitle {
   color: #79a981;
-  font-size: 36px; /* Tamaño de fuente incrementado */
+  font-size: 36px;
   margin-bottom: 0;
 }
 
@@ -156,25 +148,25 @@ html, body {
   background-color: #f3f8f3;
   padding: 10px 20px;
   border-radius: 20px;
-  font-size: 30px; /* Tamaño de fuente incrementado */
+  font-size: 30px;
   color: #79a981;
 }
 
 .experimentoDescription, .hipotesis, .explicacion, .conclusion {
   color: #ffffff;
-  font-size: 30px; /* Tamaño de fuente incrementado */
-  margin-top: 10px;
+  font-size: 30px;
+  margin-top: 40px;
   margin-bottom: 20px;
 }
 
 .hipotesis h3, .conclusion h3 {
   color: #79a981;
-  font-size: 24px; /* Tamaño de fuente incrementado */
+  font-size: 24px;
 }
 
 .materialsHeader {
   color: #79a981;
-  font-size: 24px; /* Tamaño de fuente incrementado */
+  font-size: 24px;
   margin-top: 20px;
 }
 
@@ -183,32 +175,13 @@ html, body {
   padding-left: 0;
 }
 
-.slick-prev, .slick-next {
-  position: absolute;
-  bottom: 10px; /* Ajusta esto según sea necesario para el espacio desde el fondo */
-  z-index: 1;
-  font-size: 20px;
-  background-color: rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.slick-prev {
-  left: 10px; /* Ajusta esto según sea necesario para el espacio desde la izquierda */
-}
-
-.slick-next {
-  right: 10px; /* Ajusta esto según sea necesario para el espacio desde la derecha */
-}
-
 .materialItem {
   background: #f0f5f0;
-  padding: 15px; /* Tamaño de padding incrementado */
+  padding: 15px;
   margin-bottom: 5px;
   border-radius: 8px;
   border-left: 5px solid #79a981;
-  font-size: 18px; /* Tamaño de fuente incrementado */
+  font-size: 18px;
 }
 
 .controls {
@@ -221,7 +194,7 @@ html, body {
   color: white;
   border: none;
   padding: 10px 20px;
-  font-size: 20px; /* Tamaño de fuente incrementado */
+  font-size: 20px;
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s;
@@ -244,34 +217,26 @@ html, body {
 .explicacion {
   background-color: #f0f5f0;
   border: 2px solid #79a981;
-  padding: 20px; /* Tamaño de padding incrementado */
+  padding: 20px;
   border-radius: 8px;
   margin-top: 20px;
   margin-bottom: 20px;
   color: #333;
-  font-size: 20px; /* Tamaño de fuente incrementado */
+  font-size: 20px;
 }
 
 img {
   width: 250px;
 }
 
-.galileoImage {
-  position: absolute;
-  bottom: 10px;
-  right: 200px;
-  width: 13%; /* Cambié el valor a 200px para aumentar el tamaño */
-  height: auto;
-}
-
 .paso {
-  font-size: 24px; /* Tamaño de fuente incrementado para los pasos */
+  font-size: 24px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
 .bocadillo {
-  font-size: 22px; /* Tamaño de fuente incrementado para el texto del paso */
+  font-size: 22px;
   background: #f0f5f0;
   color: #333;
   padding: 15px;
@@ -280,15 +245,15 @@ img {
 }
 
 .backLink {
-  position: absolute; /* Agregar posición absoluta */
-  top: 20px; /* Ajustar la distancia desde arriba */
-  left: 20px; /* Ajustar la distancia desde la izquierda */
-  z-index: 1000; /* Asegurar que esté por encima de otros elementos */
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
 }
 
 @media (max-width: 768px) {
   .controlButton {
-    font-size: 1em; /* Ajuste de tamaño de fuente en pantallas pequeñas */
+    font-size: 1em;
     padding: 5px 10px;
   }
 
