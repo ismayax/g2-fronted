@@ -15,6 +15,9 @@ import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
+import Contactenos from './components/Contactenos';
+import SuperuserDashboard from './components/SuperuserDashboard';
+import UserDashboard from './components/UserDashboard';
 
 function App() {
   const [user, setUser] = useState(null);
