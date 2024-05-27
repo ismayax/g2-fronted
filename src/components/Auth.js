@@ -11,9 +11,23 @@ function Auth() {
 
   const signIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Obtén el token del usuario para verificar los Custom Claims
+      const idTokenResult = await user.getIdTokenResult();
+      const role = idTokenResult.claims.role;
+
       console.log('Logged in!');
-      navigate('/dashboard');
+      
+      // Redirige según el rol del usuario
+      if (role === 'superuser') {
+        navigate('/superuser-dashboard');
+      } else if (role === 'user') {
+        navigate('/user-dashboard');
+      } else {
+        navigate('/unknown-role'); // Opcional: para manejar roles desconocidos
+      }
     } catch (error) {
       console.error('Authentication error:', error);
       setError(error.message);

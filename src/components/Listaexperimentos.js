@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
-import fondoImage from "../assets/img/laboratorio.jpg"; // Importa la imagen de fondo
-import "../assets/css/Listaexperimentos.css"; // Importa el nuevo CSS
+import "../assets/css/Listaexperimentos.css";
+import fondoImage from "../assets/img/laboratorio.jpg"; // Import the background image
+import galileoImage from "../assets/img/galileo3.png"; // Import the Galileo image
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
@@ -32,18 +33,21 @@ const Listaexperimentos = () => {
 
     return (
         <div className="pagina-experimentos-container" style={{ backgroundImage: `url(${fondoImage})` }}>
-            <nav>
-                <div className="barra">
-                    <Link className="flecha" to="/Paginaprincipal"></Link>
-                    <h1 className="elemento">EXPERIMENTOS</h1>
+            <div className="barra">
+                <div className="btn-menu">
+                    <label htmlFor="btn-menu" className="icon-menu"></label>
                 </div>
-            </nav>
+                <Link className="flecha" to="/Paginaprincipal"></Link>
+                <h1 className="elemento">EXPERIMENTOS</h1>
+                <div className="lista-enlaces"></div>
+            </div>
 
+            <div className="spacer"></div> {/* Agrega un elemento de espaciado para compensar el espacio ocupado por la barra */}
             <div className="recuadro-container">
                 {actividades.length > 0 ? (
-                    actividades.map((actividad, index) => (
-                        <div key={actividad.id} className="recuadro">
-                            <Link to={`/experimento/${actividad.id}`} className="link">
+                    actividades.map((actividad) => (
+                        <div key={actividad.id} className="recuadro" style={rectangleStyle}>
+                            <Link to={`/experimento/${actividad.id}`} style={linkStyle}>
                                 {actividad.nombre}
                             </Link>
                         </div>
@@ -52,8 +56,26 @@ const Listaexperimentos = () => {
                     <p>No hay actividades disponibles.</p>
                 )}
             </div>
+
+            <img src={galileoImage} alt="Galileo" className="galileo-image" />
         </div>
     );
 };
 
 export default Listaexperimentos;
+
+const rectangleStyle = {
+    marginBottom: "40px",
+    width: "30%",
+    padding: "30px",
+    borderRadius: "50px",
+    backgroundColor: "rgb(120,168,128)",
+    textAlign: "center",
+    display: "inline-block",
+};
+
+const linkStyle = {
+    textDecoration: "none",
+    color: "white",
+    fontSize: "24px",
+};

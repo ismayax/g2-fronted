@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
-import "../assets/css/Paginalniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorio.jpg";
 import galileoImage from "../assets/img/galileo3.png"; // Importar la imagen del personaje
@@ -12,7 +11,7 @@ const Infantil = () => {
       <nav>
         <div className="barra">
           <Link className="flecha" to="/Paginaprincipal"></Link>
-          <h1 className="elemento">  SELECCIONA EL CURSO</h1>
+          <h1 className="elemento">SELECCIONA EL CURSO</h1>
         </div>
       </nav>
       <div className="cuadro-container">
@@ -23,6 +22,7 @@ const Infantil = () => {
       <img src={galileoImage} alt="Galileo" className="galileo-image" />
     </div>
   );
+  
 };
 
 export default Infantil;

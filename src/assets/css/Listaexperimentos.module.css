@@ -1,11 +1,9 @@
-.pagina-experimentos-container {
+.paginaExperimentosContainer {
   height: 100vh;
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   position: relative;
 }
 
@@ -17,7 +15,7 @@
   text-align: center;
   box-sizing: border-box;
   display: flex;
-  justify-content: center; /* Centramos el contenido de la barra */
+  justify-content: space-between;
   align-items: center;
   position: fixed; /* Fijar la barra en la parte superior */
   top: 0; /* Posicionar la barra en la parte superior */
@@ -26,35 +24,32 @@
 
 .elemento {
   margin: 0;
-  font-size: 3em; /* Agrandar el tamaño de la fuente */
-  color: #79a981; /* Verde de la empresa */
+  font-size: 2.5em;
+  color: #f4ecd8;
 }
 
 .flecha {
-  position: absolute; /* Posicionar la flecha de manera absoluta */
-  left: 20px; /* Alinear la flecha a la izquierda */
   text-decoration: none;
   font-size: 1.5em;
-  color: #79a981; /* Verde de la empresa */
+  color: #f4ecd8;
   padding: 10px;
 }
 
-.recuadro-container {
+.recuadroContainer {
   display: flex;
-  flex-direction: column; /* Mostrar cuadros uno debajo del otro */
+  flex-direction: column;
   align-items: center;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
-  margin-top: 80px; /* Espaciado para compensar la barra fija */
 }
 
 .recuadro {
   margin-bottom: 20px;
-  width: 80%; /* Ajusta el ancho según sea necesario */
+  width: 70%;
   padding: 20px;
   border-radius: 10px;
-  background-color: rgba(121, 169, 129, 0.8); /* Verde de la empresa con opacidad */
+  background-color: rgba(121, 169, 129, 0.8);
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
@@ -66,15 +61,20 @@
 
 .link {
   text-decoration: none;
-  color: rgb(255, 255, 255);
+  color: #333333;
   font-size: 2em;
   font-weight: bold;
 }
 
-.galileo-image {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  width: 15%; /* Agrandar la imagen */
-  height: auto;
+
+.flecha {
+  text-decoration: none;
+  font-size: 1.5em;
+  color: #f4ecd8;
+  padding: 10px;
+  position: absolute; /* Posiciona la flecha de forma absoluta */
+  top: 20px; /* Ajusta la posición desde la parte superior */
+  left: 20px; /* Ajusta la posición desde el lado izquierdo */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
 }
+

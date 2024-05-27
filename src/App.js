@@ -15,7 +15,6 @@ import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
 import Politica from './components/politicas';
 import Terminos from './components/terminos';
-import PrivateRoute from "./screens/Rutas";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,6 +53,11 @@ function App() {
       <Route path="/pago" element={<Pago />} />
       <Route path="/Politica" element={<Politica />} />
       <Route path="/Terminos" element={<Terminos />} />
+      <Route path="/Contactenos" element={<Contactenos />} />
+      <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
+      <Route path="/user-dashboard" element={<UserDashboard />} />
+
+      
     </Routes>
   );
 }
