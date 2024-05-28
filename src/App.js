@@ -18,7 +18,8 @@ import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
 import UserDashboard from './components/UserDashboard';
-import PrivateRoute from './PrivateRoute'; 
+import AdminPanel from './components/AdminPanel'; // Importar el componente de administración
+import PrivateRoute from './PrivateRoute'; // Importa tu componente PrivateRoute
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function App() {
@@ -40,22 +41,18 @@ function App() {
   }
 
   return (
-    <AuthProvider>
+    <AuthProvider value={{ user, setUser }}>
       <Routes>
         <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to="/Paginaprincipal" /> : <Login setHasInteracted={setHasInteracted} />)} />
+        <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
         <Route path="/login" element={<Login setHasInteracted={setHasInteracted} />} />
-        <Route element={<PrivateRoute allowedRoles={['admin', 'docente', 'usuario']} />}>
-          <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
-        </Route>
-        <Route element={<PrivateRoute allowedRoles={['admin', 'docente']} />}>
-          <Route path="/Primaria" element={<Primaria />} />
-          <Route path="/Infantil" element={<Infantil />} />
-          <Route path="/secundaria" element={<Secundaria />} />
-        </Route>
+        <Route path="/Primaria" element={<Primaria />} />
         <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
         <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
         <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
         <Route path="/experimento/:id" element={<Experimento />} />
+        <Route path="/Infantil" element={<Infantil />} />
+        <Route path="/secundaria" element={<Secundaria />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/contrasena" element={<Contrasena />} />
         <Route path="/actividades/:id" element={<DetalleExperimento />} />
@@ -64,12 +61,21 @@ function App() {
         <Route path="/Politica" element={<Politica />} />
         <Route path="/Terminos" element={<Terminos />} />
         <Route path="/Contactenos" element={<Contactenos />} />
-        <Route element={<PrivateRoute allowedRoles={['admin']} />}>
-          <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
-        </Route>
-        <Route element={<PrivateRoute allowedRoles={['usuario']} />}>
-          <Route path="/user-dashboard" element={<UserDashboard />} />
-        </Route>
+        <Route path="/superuser-dashboard" element={
+          <PrivateRoute role="admin">
+            <SuperuserDashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/user-dashboard" element={
+          <PrivateRoute role="user">
+            <UserDashboard />
+          </PrivateRoute>
+        } />
+        <Route path="/admin-panel" element={
+          <PrivateRoute role="admin">
+            <AdminPanel />
+          </PrivateRoute>
+        } />
       </Routes>
     </AuthProvider>
   );
