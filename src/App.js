@@ -22,7 +22,7 @@ import UserDashboard from './components/UserDashboard';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [hasInteracted, setHasInteracted] = useState(false); // Nuevo estado
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -59,8 +59,6 @@ function App() {
       <Route path="/Contactenos" element={<Contactenos />} />
       <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
       <Route path="/user-dashboard" element={<UserDashboard />} />
-
-      
     </Routes>
   );
 }
