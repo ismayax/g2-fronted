@@ -55,7 +55,7 @@ const Paginaprincipal = ({ userId }) => {
       <button onClick={() => setIsChatOpen(!isChatOpen)} className="chat-toggle-button">
         {isChatOpen ? 'Cerrar Chat' : 'Abrir Chat'}
       </button>
-      {isChatOpen && <Chat userId={userId} />}
+      {isChatOpen && <Chat userId={userId} closeChat={() => setIsChatOpen(false)} />}
     </div>
   );
 };
