@@ -6,35 +6,33 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative; /* Añadir posición relativa */
+  position: relative;
 }
 
 .barra {
-  width: auto; /* Cambiar el ancho a automático */
-  max-width: 100%; /* Establecer el ancho máximo */
+  width: auto;
+  max-width: 100%;
   padding: 20px;
-  background-color: rgba(51, 51, 51, 0.8); /* Gris 2 con opacidad */
+  background-color: rgba(51, 51, 51, 0.8);
   color: white;
   text-align: center;
   box-sizing: border-box;
   display: flex;
-  justify-content: flex-start; /* Alinear la barra en el lado izquierdo */
+  justify-content: flex-start;
   align-items: center;
-  position: fixed; /* Fijar la barra en la parte superior */
-  top: 0; /* Posicionar la barra en la parte superior */
-  left: 0; /* Alinear la barra en el borde izquierdo */
-  right: 0; /* Alinear la barra en el borde derecho */
-  margin-left: auto; /* Establecer margen izquierdo automático */
-  margin-right: auto; /* Establecer margen derecho automático */
-  z-index: 1000; /* Asegurar que esté por encima de otros elementos */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1000;
 }
-
-
 
 .elemento {
   margin: 0;
   font-size: 2.5em;
-  color: #79a981; /* Verde de la empresa */
+  color: #79a981;
   width: 100%;
 }
 
@@ -43,7 +41,7 @@
   top: 60px;
   right: 0;
   width: 250px;
-  background-color: rgba(51, 51, 51, 0.9); /* Gris 2 con más opacidad */
+  background-color: rgba(51, 51, 51, 0.9);
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
 }
@@ -61,24 +59,30 @@
 
 .cuadro-container {
   display: flex;
-  flex-direction: column; /* Cambiar la dirección a columna */
+  flex-direction: column;
   align-items: center;
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
 }
 
+.cuadro-container.dos-columnas {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .cuadros {
-  padding: 30px;
+  padding: 40px;
   border-radius: 50px;
-  background-color: rgba(121, 169, 129, 0.8); /* Verde de la empresa con opacidad */
+  background-color: rgba(121, 169, 129, 0.8);
   text-align: center;
   text-decoration: none;
   color: white;
   font-size: 2em;
   font-weight: bold;
-  width: 50%; /* Ajusta el ancho según sea necesario */
-  margin: 10px 0; /* Espaciado entre los cuadros */
+  width: 30%; /* Ajusta el ancho para que quepan dos columnas */
+  margin: 10px; /* Espaciado entre los cuadros */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
 }
@@ -92,10 +96,10 @@
 }
 
 .galileo-image {
-  position: absolute; /* Posición absoluta para colocar la imagen en la esquina inferior derecha */
+  position: absolute;
   bottom: 0;
   right: 0;
-  width: 15%; /* La imagen ocupa media pantalla */
-  height: auto; /* Mantener la proporción de la imagen */
+  width: 15%;
+  height: auto;
   margin-right: 7%;
 }
