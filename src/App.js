@@ -18,7 +18,7 @@ import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
 import UserDashboard from './components/UserDashboard';
-import PrivateRoute from './PrivateRoute'; // Importa tu componente PrivateRoute
+import PrivateRoute from './PrivateRoute'; 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function App() {
