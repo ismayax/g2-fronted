@@ -18,6 +18,8 @@ import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
 import UserDashboard from './components/UserDashboard';
+import PrivateRoute from './PrivateRoute'; // Importa tu componente PrivateRoute
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,30 +40,38 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to="/Paginaprincipal" /> : <Login setHasInteracted={setHasInteracted} />)} />
-      <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
-      <Route path="/login" element={<Login setHasInteracted={setHasInteracted} />} />
-      <Route path="/Primaria" element={<Primaria />} />
-      <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
-      <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
-      <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
-      <Route path="/experimento/:id" element={<Experimento />} />
-      <Route path="/Infantil" element={<Infantil />} />
-      <Route path="/secundaria" element={<Secundaria />} />
-      <Route path="/registro" element={<Registro />} />
-      <Route path="/contrasena" element={<Contrasena />} />
-      <Route path="/actividades/:id" element={<DetalleExperimento />} />
-      <Route path="/suscripcion" element={<PlanesSuscripcion />} />
-      <Route path="/pago" element={<Pago />} />
-      <Route path="/Politica" element={<Politica />} />
-      <Route path="/Terminos" element={<Terminos />} />
-      <Route path="/Contactenos" element={<Contactenos />} />
-      <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
-      <Route path="/user-dashboard" element={<UserDashboard />} />
-
-      
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to="/Paginaprincipal" /> : <Login setHasInteracted={setHasInteracted} />)} />
+        <Route path="/login" element={<Login setHasInteracted={setHasInteracted} />} />
+        <Route element={<PrivateRoute allowedRoles={['admin', 'docente', 'usuario']} />}>
+          <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
+        </Route>
+        <Route element={<PrivateRoute allowedRoles={['admin', 'docente']} />}>
+          <Route path="/Primaria" element={<Primaria />} />
+          <Route path="/Infantil" element={<Infantil />} />
+          <Route path="/secundaria" element={<Secundaria />} />
+        </Route>
+        <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
+        <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
+        <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
+        <Route path="/experimento/:id" element={<Experimento />} />
+        <Route path="/registro" element={<Registro />} />
+        <Route path="/contrasena" element={<Contrasena />} />
+        <Route path="/actividades/:id" element={<DetalleExperimento />} />
+        <Route path="/suscripcion" element={<PlanesSuscripcion />} />
+        <Route path="/pago" element={<Pago />} />
+        <Route path="/Politica" element={<Politica />} />
+        <Route path="/Terminos" element={<Terminos />} />
+        <Route path="/Contactenos" element={<Contactenos />} />
+        <Route element={<PrivateRoute allowedRoles={['admin']} />}>
+          <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
+        </Route>
+        <Route element={<PrivateRoute allowedRoles={['usuario']} />}>
+          <Route path="/user-dashboard" element={<UserDashboard />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 }
 
