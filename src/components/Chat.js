@@ -1,6 +1,6 @@
 // src/components/Chat.js
 import React, { useState, useEffect } from 'react';
-import { ref, onValue, push } from 'firebase/database';
+import { ref, onValue, push, update, remove } from 'firebase/database';
 import { database } from './firebaseConfig';
 import '../assets/css/Chat.css';
 
@@ -10,19 +10,27 @@ const Chat = ({ userId, closeChat }) => {
   const [userEmail, setUserEmail] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
 
   useEffect(() => {
-    const messagesRef = ref(database, 'messages');
-    onValue(messagesRef, (snapshot) => {
+    const chatRef = ref(database, 'messages');
+    onValue(chatRef, (snapshot) => {
       const data = snapshot.val();
-      const messagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      setMessages(messagesArray);
+      const chatList = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+      setChatHistory(chatList);
     });
-  }, []);
+
+    const requestsRef = ref(database, `friendRequests/${userId}`);
+    onValue(requestsRef, (snapshot) => {
+      const data = snapshot.val();
+      const requestsArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+      setFriendRequests(requestsArray);
+    });
+  }, [userId]);
 
   const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
-      const messagesRef = ref(database, 'messages');
+    if (newMessage.trim() !== '' && activeChat) {
+      const messagesRef = ref(database, `messages/${activeChat}`);
       const message = {
         text: newMessage,
         userId: userId,
@@ -36,18 +44,46 @@ const Chat = ({ userId, closeChat }) => {
   const handleAddUser = () => {
     if (userEmail.trim() !== '') {
       const usersRef = ref(database, 'users');
-      push(usersRef, { email: userEmail });
+      onValue(usersRef, (snapshot) => {
+        const data = snapshot.val();
+        const user = Object.values(data).find(user => user.email === userEmail);
+        if (user) {
+          const requestsRef = ref(database, `friendRequests/${user.id}`);
+          push(requestsRef, { requesterId: userId, requesterEmail: userEmail });
+        } else {
+          alert('Usuario no encontrado');
+        }
+      }, { onlyOnce: true });
       setUserEmail('');
     }
   };
 
-  const handleViewChatHistory = () => {
-    const messagesRef = ref(database, 'messages');
-    onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const historyArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      setChatHistory(historyArray);
+  const handleAcceptRequest = (requestId, requesterId) => {
+    const newChatRef = ref(database, 'messages');
+    const newChatKey = push(newChatRef).key;
+    const updates = {};
+
+    updates[`/messages/${newChatKey}`] = {
+      [push().key]: {
+        text: 'Chat creado',
+        userId: 'system',
+        timestamp: Date.now()
+      }
+    };
+
+    updates[`/users/${userId}/chats/${newChatKey}`] = true;
+    updates[`/users/${requesterId}/chats/${newChatKey}`] = true;
+
+    update(ref(database), updates).then(() => {
+      remove(ref(database, `friendRequests/${userId}/${requestId}`));
+      setFriendRequests(friendRequests.filter(request => request.id !== requestId));
+      alert('Chat creado');
     });
+  };
+
+  const handleRejectRequest = (requestId) => {
+    remove(ref(database, `friendRequests/${userId}/${requestId}`));
+    setFriendRequests(friendRequests.filter(request => request.id !== requestId));
   };
 
   const handleSelectChat = (chatId) => {
@@ -67,10 +103,22 @@ const Chat = ({ userId, closeChat }) => {
         <button onClick={closeChat}>×</button>
       </div>
       <div className="sidebar">
+        {friendRequests.length > 0 && (
+          <div className="friend-requests">
+            <h4>Solicitudes de Amistad</h4>
+            {friendRequests.map((request) => (
+              <div key={request.id} className="request">
+                <span>{request.requesterEmail}</span>
+                <button onClick={() => handleAcceptRequest(request.id, request.requesterId)}>Aceptar</button>
+                <button onClick={() => handleRejectRequest(request.id)}>Rechazar</button>
+              </div>
+            ))}
+          </div>
+        )}
         {chatHistory.map((chat) => (
           <div key={chat.id} className="user-list" onClick={() => handleSelectChat(chat.id)}>
-            <strong>{chat.userId}</strong>
-            <p>{chat.text}</p>
+            <strong>{chat.id}</strong>
+            <p>{chat.messages && chat.messages[Object.keys(chat.messages)[0]].text}</p>
           </div>
         ))}
       </div>
@@ -100,7 +148,6 @@ const Chat = ({ userId, closeChat }) => {
           />
           <button onClick={handleAddUser}>Agregar</button>
         </div>
-        <button onClick={handleViewChatHistory}>Ver Historial</button>
       </div>
     </div>
   );
