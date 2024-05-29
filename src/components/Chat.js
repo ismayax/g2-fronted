@@ -10,6 +10,7 @@ const Chat = ({ userId, closeChat }) => {
   const [docentes, setDocentes] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [activeUser, setActiveUser] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchDocentes = async () => {
@@ -20,6 +21,7 @@ const Chat = ({ userId, closeChat }) => {
     };
 
     fetchDocentes();
+    setIsOpen(true); // Open the chat with animation
   }, []);
 
   const handleSendMessage = async () => {
@@ -50,44 +52,54 @@ const Chat = ({ userId, closeChat }) => {
     setMessages(messagesArray);
   };
 
+  const handleCloseChat = () => {
+    setIsOpen(false);
+    setTimeout(closeChat, 300); // Wait for the animation to finish before closing the chat
+  };
+
   return (
-    <div className="chat-container">
+    <div className={`chat-container ${isOpen ? 'open' : 'closed'}`}>
       <div className="chat-header">
         <span>Chat</span>
-        <button onClick={closeChat}>×</button>
+        <button onClick={handleCloseChat}>×</button>
       </div>
-      <div className="sidebar">
-        {docentes.length > 0 ? (
-          docentes.map((docente) => (
-            <div key={docente.id} className="user-list" onClick={() => handleSelectUser(docente.id)}>
-              <strong>{docente.email}</strong>
-            </div>
-          ))
-        ) : (
-          <p>No users found</p>
-        )}
-      </div>
-      <div className="chat-content">
-        {activeUser && (
-          <div className="messages">
-            {messages.map((message) => (
-              <div key={message.id} className="message">
-                <strong>{message.userId}:</strong> {message.text}
+      <div className="chat-body">
+        <div className="sidebar">
+          {docentes.length > 0 ? (
+            docentes.map((docente) => (
+              <div key={docente.id} className="user-list" onClick={() => handleSelectUser(docente.id)}>
+                <strong>{docente.email}</strong>
               </div>
-            ))}
-          </div>
-        )}
-        {activeUser && (
-          <div className="input-container">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Escribe un mensaje..."
-            />
-            <button onClick={handleSendMessage}>Enviar</button>
-          </div>
-        )}
+            ))
+          ) : (
+            <p>No users found</p>
+          )}
+        </div>
+        <div className="chat-content">
+          {activeUser && (
+            <>
+              <div className="messages">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`message ${message.userId === userId ? 'sent' : 'received'}`}
+                  >
+                    {message.text}
+                  </div>
+                ))}
+              </div>
+              <div className="input-container">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Escribe un mensaje..."
+                />
+                <button onClick={handleSendMessage}>Enviar</button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
