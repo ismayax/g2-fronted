@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/flechas.css";
 import "../assets/css/Cursosniveles.css";
-import fondoImage from "../assets/img/laboratorio.jpg"; // Ajusta la ruta según sea necesario
+import fondoImage from "../assets/img/laboratoriosecundaria.jpg"; // Ajusta la ruta según sea necesario
+import galileoImage from "../assets/img/galileo3.png"; // Importa la imagen de Galileo
 
 const Secundaria = () => {
   return (
@@ -19,6 +20,7 @@ const Secundaria = () => {
         <Link to="/Listaexperimentos/secundaria/s3" className="cuadros">3º</Link>
         <Link to="/Listaexperimentos/secundaria/s4" className="cuadros">4º</Link>
       </div>
+      <img src={galileoImage} alt="Galileo" className="galileo-image" /> {/* Agrega la imagen de Galileo */}
     </div>
   );
 };

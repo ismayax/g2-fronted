@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
-import fondoImage from "../assets/img/laboratorio.jpg";
+import fondoImage from "../assets/img/laboratorioinfantil.jpg"; // Cambiar la referencia de la imagen
 import galileoImage from "../assets/img/galileo3.png"; // Importar la imagen del personaje
 
 const Infantil = () => {
   return (
-    <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
+    <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})`, backgroundSize: 'cover' }}> {/* Ajuste de backgroundSize */}
       <nav>
         <div className="barra">
           <Link className="flecha" to="/Paginaprincipal"></Link>
@@ -22,7 +22,6 @@ const Infantil = () => {
       <img src={galileoImage} alt="Galileo" className="galileo-image" />
     </div>
   );
-  
 };
 
 export default Infantil;

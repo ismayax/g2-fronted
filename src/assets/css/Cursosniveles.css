@@ -7,6 +7,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden; /* Agregar esta propiedad para recortar el contenido que se desborda */
+
 }
 
 .barra {
@@ -97,9 +99,9 @@
 
 .galileo-image {
   position: absolute;
-  bottom: 0;
+  bottom: -9%;
   right: 0;
-  width: 15%;
+  width: 19%;
   height: auto;
-  margin-right: 7%;
+  margin-right: 4%;
 }
