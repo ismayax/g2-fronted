@@ -2,7 +2,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { getDatabase } from 'firebase/database'; // Importa getDatabase
 
 const firebaseConfig = {
   apiKey: "AIzaSyCznBE6lrZygi8cRovE5S3Hxas3PU7T4G8",
@@ -19,6 +18,5 @@ const app = initializeApp(firebaseConfig);
 console.log('Firebase initialized:', app);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const database = getDatabase(app); // Añade la inicialización de la base de datos en tiempo real
 
-export { app, db, auth, database }; // Exporta la base de datos
+export { app, db, auth };
