@@ -182,14 +182,16 @@ function Experimento() {
           {renderSlides()}
         </Slider>
         <div className={styles.navigationMuteContainer}>
-          <button onClick={toggleMute} className={styles.muteButton}>
-            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-          </button>
-          <div className={styles.controls}>
-            <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
-            <button onClick={nextSlide} className={styles.controlButton}>Siguiente</button>
-          </div>
-        </div>
+  <button onClick={toggleMute} className={styles.muteButton}>
+    {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+  </button>
+  <div className={styles.controls}>
+    <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
+    <span className={styles.buttonSeparator}></span> {/* Separador */}
+    <button onClick={nextSlide} className={styles.controlButton}>Siguiente</button>
+  </div>
+</div>
+
       </div>
       {showGalileo && <img src={galileoImage} alt="Galileo" className={styles.galileoImage} />}
     </div>

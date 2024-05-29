@@ -1,9 +1,10 @@
+// Primaria.jsx (Ejemplo)
 import React from "react";
 import { Link } from "react-router-dom";
-import "../assets/css/Cursosniveles.css"; // Asegúrate de que este archivo tenga los estilos consistentes
+import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
-import fondoImage from "../assets/img/laboratorio.jpg";
-import galileoImage from "../assets/img/galileo3.png"; // Importar la imagen del personaje
+import fondoImage from "../assets/img/laboratorioprimaria.jpg";
+import galileoImage from "../assets/img/galileo3.png";
 
 const Primaria = () => {
   return (
@@ -15,12 +16,16 @@ const Primaria = () => {
         </div>
       </nav>
       <div className="cuadro-container dos-columnas">
-        <Link to="/Listaexperimentos/primaria/p1" className="cuadros">1º</Link>
-        <Link to="/Listaexperimentos/primaria/p2" className="cuadros">2º</Link>
-        <Link to="/Listaexperimentos/primaria/p3" className="cuadros">3º</Link>
-        <Link to="/Listaexperimentos/primaria/p4" className="cuadros">4º</Link>
-        <Link to="/Listaexperimentos/primaria/p5" className="cuadros">5º</Link>
-        <Link to="/Listaexperimentos/primaria/p6" className="cuadros">6º</Link>
+        {["p1", "p2", "p3", "p4", "p5", "p6"].map((grupo) => (
+          <Link
+            key={grupo}
+            to={`/Listaexperimentos/primaria/${grupo}`}
+            state={{ fondo: fondoImage }}
+            className="cuadros"
+          >
+            {grupo.slice(1)}º
+          </Link>
+        ))}
       </div>
       <img src={galileoImage} alt="Galileo" className="galileo-image" />
     </div>

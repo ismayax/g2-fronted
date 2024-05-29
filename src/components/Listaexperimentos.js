@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import "../assets/css/Listaexperimentos.css";
-import fondoImage from "../assets/img/laboratorio.jpg"; // Import the background image
 import galileoImage from "../assets/img/galileo3.png"; // Import the Galileo image
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
+    const location = useLocation();
+    const fondoImage = location.state?.fondo || "../assets/img/laboratorioprimaria.jpg"; // Default background if none is passed
     const [actividades, setActividades] = useState([]);
 
     useEffect(() => {
@@ -66,9 +67,6 @@ export default Listaexperimentos;
 
 const rectangleStyle = {
     marginBottom: "40px",
-    width: "30%",
-    padding: "30px",
-    borderRadius: "50px",
     backgroundColor: "rgb(120,168,128)",
     textAlign: "center",
     display: "inline-block",
