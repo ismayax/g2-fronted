@@ -3,8 +3,8 @@
     position: fixed;
     bottom: 0;
     right: 0;
-    width: 33%; /* 33% de la pantalla horizontalmente */
-    height: 100%; /* 100% de la pantalla verticalmente */
+    width: 33%;
+    height: 100%;
     background-color: #e5ddd5;
     border-left: 1px solid #ccc;
     display: flex;

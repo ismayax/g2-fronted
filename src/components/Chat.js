@@ -1,63 +1,53 @@
 // src/components/Chat.js
 import React, { useState, useEffect } from 'react';
-import { ref, onValue, push } from 'firebase/database';
-import { database } from './firebaseConfig';
+import { collection, query, orderBy, getDocs, addDoc } from 'firebase/firestore';
+import { db } from './firebaseConfig';
 import '../assets/css/Chat.css';
 
 const Chat = ({ userId, closeChat }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
+  const [docentes, setDocentes] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
+  const [activeUser, setActiveUser] = useState(null);
 
   useEffect(() => {
-    const messagesRef = ref(database, 'messages');
-    onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const messagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      setMessages(messagesArray);
-    });
+    const fetchDocentes = async () => {
+      const docentesCollection = collection(db, 'docentes');
+      const docentesSnapshot = await getDocs(docentesCollection);
+      const docentesList = docentesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setDocentes(docentesList);
+    };
+
+    fetchDocentes();
   }, []);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
-      const messagesRef = ref(database, 'messages');
-      const message = {
+  const handleSendMessage = async () => {
+    if (newMessage.trim() !== '' && activeChat) {
+      const messagesRef = collection(db, `messages/${activeChat}/chat`);
+      await addDoc(messagesRef, {
         text: newMessage,
         userId: userId,
         timestamp: Date.now()
-      };
-      push(messagesRef, message);
+      });
       setNewMessage('');
+      loadMessages(activeChat);
     }
   };
 
-  const handleAddUser = () => {
-    if (userEmail.trim() !== '') {
-      const usersRef = ref(database, 'users');
-      push(usersRef, { email: userEmail });
-      setUserEmail('');
-    }
-  };
-
-  const handleViewChatHistory = () => {
-    const messagesRef = ref(database, 'messages');
-    onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const historyArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      setChatHistory(historyArray);
-    });
-  };
-
-  const handleSelectChat = (chatId) => {
+  const handleSelectUser = async (selectedUserId) => {
+    const chatId = [userId, selectedUserId].sort().join('_');
     setActiveChat(chatId);
-    const messagesRef = ref(database, `messages/${chatId}`);
-    onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const messagesArray = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-      setMessages(messagesArray);
-    });
+    setActiveUser(selectedUserId);
+    loadMessages(chatId);
+  };
+
+  const loadMessages = async (chatId) => {
+    const messagesRef = collection(db, `messages/${chatId}/chat`);
+    const q = query(messagesRef, orderBy('timestamp'));
+    const messageSnapshot = await getDocs(q);
+    const messagesArray = messageSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setMessages(messagesArray);
   };
 
   return (
@@ -67,40 +57,37 @@ const Chat = ({ userId, closeChat }) => {
         <button onClick={closeChat}>×</button>
       </div>
       <div className="sidebar">
-        {chatHistory.map((chat) => (
-          <div key={chat.id} className="user-list" onClick={() => handleSelectChat(chat.id)}>
-            <strong>{chat.userId}</strong>
-            <p>{chat.text}</p>
-          </div>
-        ))}
+        {docentes.length > 0 ? (
+          docentes.map((docente) => (
+            <div key={docente.id} className="user-list" onClick={() => handleSelectUser(docente.id)}>
+              <strong>{docente.email}</strong>
+            </div>
+          ))
+        ) : (
+          <p>No users found</p>
+        )}
       </div>
       <div className="chat-content">
-        <div className="messages">
-          {messages.map((message) => (
-            <div key={message.id} className="message">
-              <strong>{message.userId}:</strong> {message.text}
-            </div>
-          ))}
-        </div>
-        <div className="input-container">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Escribe un mensaje..."
-          />
-          <button onClick={handleSendMessage}>Enviar</button>
-        </div>
-        <div className="input-container">
-          <input
-            type="text"
-            value={userEmail}
-            onChange={(e) => setUserEmail(e.target.value)}
-            placeholder="Agregar usuario por correo..."
-          />
-          <button onClick={handleAddUser}>Agregar</button>
-        </div>
-        <button onClick={handleViewChatHistory}>Ver Historial</button>
+        {activeUser && (
+          <div className="messages">
+            {messages.map((message) => (
+              <div key={message.id} className="message">
+                <strong>{message.userId}:</strong> {message.text}
+              </div>
+            ))}
+          </div>
+        )}
+        {activeUser && (
+          <div className="input-container">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Escribe un mensaje..."
+            />
+            <button onClick={handleSendMessage}>Enviar</button>
+          </div>
+        )}
       </div>
     </div>
   );
