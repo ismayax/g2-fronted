@@ -18,9 +18,11 @@ import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
 import UserDashboard from './components/UserDashboard';
-import AdminPanel from './components/AdminPanel'; // Importar el componente de administración
-import PrivateRoute from './PrivateRoute'; // Importa tu componente PrivateRoute
+import AdminPanel from './components/AdminPanel'; 
+import PrivateRoute from './PrivateRoute'; 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import CentroDashboard from './components/CentroDashboard';
+import CrearDocente from './components/Creardocente';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,10 +42,13 @@ function App() {
     return <div>Cargando...</div>;
   }
 
+  const userRole = localStorage.getItem('userRole');
+  const centroId = localStorage.getItem('centroId');
+
   return (
     <AuthProvider value={{ user, setUser }}>
       <Routes>
-        <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to="/Paginaprincipal" /> : <Login setHasInteracted={setHasInteracted} />)} />
+        <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to={userRole === 'admin' ? `/centro-dashboard?centroId=${centroId}` : (userRole === 'docente' ? '/docente-dashboard' : '/home')} /> : <Login setHasInteracted={setHasInteracted} />)} />
         <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
         <Route path="/login" element={<Login setHasInteracted={setHasInteracted} />} />
         <Route path="/Primaria" element={<Primaria />} />
@@ -58,6 +63,8 @@ function App() {
         <Route path="/actividades/:id" element={<DetalleExperimento />} />
         <Route path="/suscripcion" element={<PlanesSuscripcion />} />
         <Route path="/pago" element={<Pago />} />
+        <Route path="/centro-dashboard" element={<CentroDashboard />} />
+        <Route path="/crear-docente" element={<CrearDocente />} />
         <Route path="/Politica" element={<Politica />} />
         <Route path="/Terminos" element={<Terminos />} />
         <Route path="/Contactenos" element={<Contactenos />} />

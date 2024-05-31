@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import styles from "../assets/css/Login.module.css";
 import Logo from "../assets/img/Logo_educación.png";
 
@@ -10,6 +11,7 @@ const Login = ({ setHasInteracted }) => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
+  const db = getFirestore();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -17,7 +19,31 @@ const Login = ({ setHasInteracted }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
-      navigate("/Paginaprincipal");
+      
+      // Obtener información adicional del usuario desde la colección 'centros_educativos' en Firestore
+      const centroEducativoRef = doc(db, 'centros_educativos', userCredential.user.uid);
+      const centroEducativoSnap = await getDoc(centroEducativoRef);
+
+      if (centroEducativoSnap.exists()) {
+        const centroEducativoData = centroEducativoSnap.data();
+        const { docente_id } = centroEducativoData;
+        const role = docente_id.includes(userCredential.user.uid) ? 'docente' : 'centro_educativo'; // Definir el rol según el tipo de usuario
+        
+        // Guardar el rol del usuario en el almacenamiento local
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('centroId', userCredential.user.uid);
+
+        // Redirigir al usuario según su rol
+        if (role === 'centro_educativo') {
+          navigate(`/centro-dashboard?centroId=${userCredential.user.uid}`);
+        } else if (role === 'docente') {
+          navigate('/docente-dashboard');
+        } else {
+          navigate('/home');
+        }
+      } else {
+        throw new Error('User data not found. Please contact the administrator.');
+      }
     } catch (error) {
       setError(error.message);
       console.error("Error de autenticación:", error);
@@ -66,4 +92,3 @@ const Login = ({ setHasInteracted }) => {
 };
 
 export default Login;
-
