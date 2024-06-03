@@ -116,3 +116,28 @@
     background-color: #f0f0f0;
   }
   
+  .message {
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    max-width: 60%;
+    position: relative;
+  }
+  
+  .message.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+  }
+  
+  .message.received {
+    background-color: #ffffff;
+    align-self: flex-start;
+  }
+  
+  .timestamp {
+    font-size: 0.75em;
+    color: gray;
+    text-align: right;
+    margin-top: 5px;
+  }
+  

@@ -1,6 +1,5 @@
-// src/components/Chat.js
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, addDoc, deleteDoc, where } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import '../assets/css/Chat.css';
 
@@ -22,6 +21,34 @@ const Chat = ({ userId, closeChat }) => {
 
     fetchDocentes();
     setIsOpen(true); // Open the chat with animation
+  }, []);
+
+  useEffect(() => {
+    const cleanOldMessages = async () => {
+      const fifteenDaysAgo = Date.now() - 15 * 24 * 60 * 60 * 1000;
+      const messagesRef = collection(db, `messages`);
+      const chatsSnapshot = await getDocs(messagesRef);
+
+      chatsSnapshot.forEach(async (chatDoc) => {
+        const chatId = chatDoc.id;
+        const chatMessagesRef = collection(db, `messages/${chatId}/chat`);
+        const q = query(chatMessagesRef, where('timestamp', '<', fifteenDaysAgo));
+        const oldMessagesSnapshot = await getDocs(q);
+
+        oldMessagesSnapshot.forEach(async (messageDoc) => {
+          await deleteDoc(messageDoc.ref);
+        });
+      });
+    };
+
+    // Run cleanup every time component mounts
+    cleanOldMessages();
+
+    // Set interval to run cleanup every 24 hours
+    const intervalId = setInterval(cleanOldMessages, 24 * 60 * 60 * 1000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSendMessage = async () => {
@@ -57,6 +84,22 @@ const Chat = ({ userId, closeChat }) => {
     setTimeout(closeChat, 300); // Wait for the animation to finish before closing the chat
   };
 
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return `${date.getHours()}:${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`;
+  };
+
+  const formatDay = (timestamp) => {
+    const date = new Date(timestamp);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
   return (
     <div className={`chat-container ${isOpen ? 'open' : 'closed'}`}>
       <div className="chat-header">
@@ -79,14 +122,30 @@ const Chat = ({ userId, closeChat }) => {
           {activeUser && (
             <>
               <div className="messages">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`message ${message.userId === userId ? 'sent' : 'received'}`}
-                  >
-                    {message.text}
-                  </div>
-                ))}
+                {messages.reduce((acc, message, index) => {
+                  const currentDay = formatDay(message.timestamp);
+                  const previousDay = index > 0 ? formatDay(messages[index - 1].timestamp) : null;
+
+                  if (currentDay !== previousDay) {
+                    acc.push(
+                      <div key={`date-${message.id}`} className="date-separator">
+                        {currentDay}
+                      </div>
+                    );
+                  }
+
+                  acc.push(
+                    <div
+                      key={message.id}
+                      className={`message ${message.userId === userId ? 'sent' : 'received'}`}
+                    >
+                      <span>{message.text}</span>
+                      <div className="timestamp">{formatDate(message.timestamp)}</div>
+                    </div>
+                  );
+
+                  return acc;
+                }, [])}
               </div>
               <div className="input-container">
                 <input
@@ -94,6 +153,7 @@ const Chat = ({ userId, closeChat }) => {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Escribe un mensaje..."
+                  onKeyPress={handleKeyPress}
                 />
                 <button onClick={handleSendMessage}>Enviar</button>
               </div>
