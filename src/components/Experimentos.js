@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Importar useNavigate
+import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import styles from "../assets/css/Experimento.module.css"; 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
-import galileoImage from '../assets/img/galileo3.png';
 import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa';
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 
 function Experimento() {
   const [experimento, setExperimento] = useState(null);
@@ -16,7 +16,7 @@ function Experimento() {
   const [isMuted, setIsMuted] = useState(false);
   const { id } = useParams();
   const sliderRef = useRef(null);
-  const navigate = useNavigate(); // Obtener el objeto navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchExperimento = async () => { 
@@ -69,9 +69,19 @@ function Experimento() {
     };
   }, []);
 
-  if (!experimento) {
-    return <div>Cargando...</div>;
-  }
+  useEffect(() => {
+    const canvas = document.getElementById('canvas');
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: true,
+      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+    });
+
+    return () => {
+      rive.stop();
+    };
+  }, []);
 
   const handleSlideChange = (oldIndex, newIndex) => {
     window.speechSynthesis.cancel();
@@ -89,6 +99,9 @@ function Experimento() {
   };
 
   const renderSlides = () => {
+    if (!experimento) {
+      return null; // Retorna null si experimento es null para evitar errores
+    }
     const slides = [
       <div key="descripcion">
         <div className={styles.header}>
@@ -123,7 +136,6 @@ function Experimento() {
         <div key={`paso_${index}`}>
           <div className={styles.pasoContainer}>
             <div className={styles.paso}>
-              <h2>Paso {index + 1}</h2>
               <div className={styles.bocadillo}>{paso}</div>
             </div>
           </div>
@@ -151,12 +163,16 @@ function Experimento() {
   };
 
   const nextSlide = () => {
-    sliderRef.current.slickNext();
+    if (pasoActual === experimento.Pasos.length + 4) {
+      // Si estamos en el último slide, puedes añadir aquí la lógica para manejarlo
+    } else {
+      sliderRef.current.slickNext();
+    }
   };
 
   const prevSlide = () => {
     if (pasoActual === 0) {
-      navigate(-1); // Navegar hacia la página anterior en el historial
+      navigate(-1);
     } else {
       sliderRef.current.slickPrev();
     }
@@ -182,18 +198,17 @@ function Experimento() {
           {renderSlides()}
         </Slider>
         <div className={styles.navigationMuteContainer}>
-  <button onClick={toggleMute} className={styles.muteButton}>
-    {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-  </button>
-  <div className={styles.controls}>
-    <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
-    <span className={styles.buttonSeparator}></span> {/* Separador */}
-    <button onClick={nextSlide} className={styles.controlButton}>Siguiente</button>
-  </div>
-</div>
-
+          <button onClick={toggleMute} className={styles.muteButton}>
+            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+          </button>
+          <div className={styles.controls}>
+            <button onClick={prevSlide} className={styles.controlButton} disabled={pasoActual === 0}>Anterior</button>
+            <span className={styles.buttonSeparator}></span>
+            <button onClick={nextSlide} className={styles.controlButton}>Siguiente</button>
+          </div>
+        </div>
       </div>
-      {showGalileo && <img src={galileoImage} alt="Galileo" className={styles.galileoImage} />}
+      <canvas id="canvas"></canvas>
     </div>
   );
 }
