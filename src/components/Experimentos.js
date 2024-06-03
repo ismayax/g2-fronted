@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
-import styles from "../assets/css/Experimento.module.css"; 
+import styles from "../assets/css/Experimento.module.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
@@ -19,7 +19,7 @@ function Experimento() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchExperimento = async () => { 
+    const fetchExperimento = async () => {
       const docRef = doc(db, "actividades", "infantil", "actividades", id);
       const docSnap = await getDoc(docRef);
 
@@ -38,6 +38,11 @@ function Experimento() {
       window.speechSynthesis.cancel();
       const speech = new SpeechSynthesisUtterance(texto);
       speech.lang = 'es-ES';
+      speech.pitch = 0.6;  // Ajusta el tono para que sea más grave
+      speech.rate = 1;   // Ajusta la velocidad para que sea más pausada
+      speech.volume = 1;   // Ajusta el volumen
+      const voices = window.speechSynthesis.getVoices();
+      speech.voice = voices.find(voice => voice.name === 'Google español');  // Busca una voz masculina si está disponible
       window.speechSynthesis.speak(speech);
     }
   };
