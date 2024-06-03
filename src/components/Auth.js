@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { app, auth } from './firebaseConfig'; // Importar correctamente
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { app } from './firebaseConfig'; // Asegúrate de importar correctamente
 
 function Auth() {
   const [email, setEmail] = useState('');
@@ -13,46 +13,40 @@ function Auth() {
 
   const signIn = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(getAuth(), email, password);
       const user = userCredential.user;
 
       // Obtén los datos del usuario desde Firestore
-      const userRef = doc(db, 'users', user.uid);
+      const userRef = doc(db, 'admincentro', user.uid); // Asegúrate de que el UID del usuario corresponda
       const userSnap = await getDoc(userRef);
 
       if (userSnap.exists()) {
         const userData = userSnap.data();
-        const { role, expirationDate, accessDenied } = userData;
+        const { role, centro_id } = userData;
 
-        // Verificar si el acceso está denegado
-        if (accessDenied) {
-          throw new Error('Your access has been denied by the administrator.');
-        }
+        // Guardar el usuario en el contexto global
+        setUser(userCredential.user);
 
-        // Verificar la fecha de expiración
-        const now = new Date();
-        if (expirationDate && now > new Date(expirationDate)) {
-          throw new Error('Your access has expired. Please contact the administrator.');
-        }
+        // Guardar el rol del usuario en el almacenamiento local
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('centroId', centro_id); // Asegúrate de que esto es un string
 
-        console.log('Logged in!');
-
-        // Redirige según el rol del usuario
+        // Redirigir al usuario según su rol
         if (role === 'admin') {
           navigate('/superuser-dashboard');
         } else if (role === 'docente') {
           navigate('/docente-dashboard');
-        } else if (role === 'usuario') {
-          navigate('/user-dashboard');
+        } else if (role === 'centro_educativo') {
+          navigate(`/centro-dashboard?centroId=${centro_id}`);
         } else {
-          navigate('/unknown-role'); // Opcional: para manejar roles desconocidos
+          navigate('/home');
         }
       } else {
         throw new Error('User data not found. Please contact the administrator.');
       }
     } catch (error) {
-      console.error('Authentication error:', error);
       setError(error.message);
+      console.error("Error de autenticación:", error);
     }
   };
 

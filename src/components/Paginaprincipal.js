@@ -1,13 +1,16 @@
+// src/components/Paginaprincipal.js
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import BurguerButton from "./menudesple";
 import IdenUsuario from "./idenusuario";
-import fondoImage from "../assets/img/laboratorio.jpg"; // Importa la imagen de fondo
-import galileoImage from "../assets/img/galileo3.png"; // Importa la imagen del personaje
+import fondoImage from "../assets/img/laboratorio.jpg";
+import galileoImage from "../assets/img/galileo3.png";
+import Chat from "./Chat";
 
 const Paginaprincipal = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -26,7 +29,7 @@ const Paginaprincipal = ({ userId }) => {
   return (
     <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
       <nav>
-        <div className="barra"> 
+        <div className="barra">
           <h1 className="elemento">SELECCIONA EL NIVEL ACADEMICO</h1>
           <BurguerButton isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
@@ -48,6 +51,11 @@ const Paginaprincipal = ({ userId }) => {
         </Link>
       </div>
       <img src={galileoImage} alt="Galileo" className="galileo-image" />
+
+      <button onClick={() => setIsChatOpen(!isChatOpen)} className="chat-toggle-button">
+        {isChatOpen ? 'Cerrar Chat' : 'Abrir Chat'}
+      </button>
+      {isChatOpen && <Chat userId={userId} closeChat={() => setIsChatOpen(false)} />}
     </div>
   );
 };

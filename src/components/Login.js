@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import styles from "../assets/css/Login.module.css";
 import Logo from "../assets/img/Logo_educación.png";
 
-const Login = ({ setHasInteracted }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,35 +15,38 @@ const Login = ({ setHasInteracted }) => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setHasInteracted(true); // Marca que el usuario ha interactuado
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
       
-      // Obtener información adicional del usuario desde la colección 'centros_educativos' en Firestore
-      const centroEducativoRef = doc(db, 'centros_educativos', userCredential.user.uid);
-      const centroEducativoSnap = await getDoc(centroEducativoRef);
+      const userId = userCredential.user.uid;
 
-      if (centroEducativoSnap.exists()) {
-        const centroEducativoData = centroEducativoSnap.data();
-        const { docente_id } = centroEducativoData;
-        const role = docente_id.includes(userCredential.user.uid) ? 'docente' : 'centro_educativo'; // Definir el rol según el tipo de usuario
-        
-        // Guardar el rol del usuario en el almacenamiento local
-        localStorage.setItem('userRole', role);
-        localStorage.setItem('centroId', userCredential.user.uid);
+      // Obtener información adicional del usuario desde las colecciones en Firestore
+      const adminCentroRef = doc(db, 'admincentro', userId);
+      const adminCentroSnap = await getDoc(adminCentroRef);
 
-        // Redirigir al usuario según su rol
-        if (role === 'centro_educativo') {
-          navigate(`/centro-dashboard?centroId=${userCredential.user.uid}`);
-        } else if (role === 'docente') {
-          navigate('/docente-dashboard');
-        } else {
-          navigate('/home');
-        }
-      } else {
-        throw new Error('User data not found. Please contact the administrator.');
+      if (adminCentroSnap.exists()) {
+        const adminCentroData = adminCentroSnap.data();
+        console.log('AdminCentro data:', adminCentroData); // Agrega un log para depurar
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('centroId', adminCentroData.centro_id[0]);
+        navigate('/admin-panel');
+        return;
       }
+
+      const docenteRef = doc(db, 'docentes', userId);
+      const docenteSnap = await getDoc(docenteRef);
+
+      if (docenteSnap.exists()) {
+        const docenteData = docenteSnap.data();
+        console.log('Docente data:', docenteData); // Agrega un log para depurar
+        localStorage.setItem('userRole', 'docente');
+        localStorage.setItem('centroId', docenteData.centro_id[0]);
+        navigate('/Paginaprincipal');
+        return;
+      }
+
+      throw new Error('User data not found. Please contact the administrator.');
     } catch (error) {
       setError(error.message);
       console.error("Error de autenticación:", error);

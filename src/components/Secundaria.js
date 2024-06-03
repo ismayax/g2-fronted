@@ -1,61 +1,35 @@
+// Secundaria.jsx (Ejemplo)
 import React from "react";
 import { Link } from "react-router-dom";
+import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
+import fondoImage from "../assets/img/laboratoriosecundaria.jpg";
+import galileoImage from "../assets/img/galileo3.png";
 
 const Secundaria = () => {
   return (
-    <nav>
-      <div className="barra">
-        <Link className="flecha" to="/Paginaprincipal"></Link>
-        <h1 className="elemento">SELECCIONA EL CURSO</h1>
-      </div>
-
-      <div className="centrado" style={centradoStyle}>
-        <div className="cuadro-container" style={containerStyle}>
-          {/* Primera columna */}
-          <div className="columna">
-            <Link to="/Listaexperimentos/secundaria/s1" className="cuadros" style={cuadroStyle}>1º</Link>
-            <Link to="/Listaexperimentos/secundaria/s3" className="cuadros" style={cuadroStyle}>3º</Link>
-          </div>
-          {/* Segunda columna */}
-          <div className="columna">
-            <Link to="/Listaexperimentos/secundaria/s2" className="cuadros" style={cuadroStyle}>2º</Link>
-            <Link to="/Listaexperimentos/secundaria/s4" className="cuadros" style={cuadroStyle}>4º</Link>
-          </div>
+    <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
+      <nav>
+        <div className="barra">
+          <Link className="flecha" to="/Paginaprincipal"></Link>
+          <h1 className="elemento">SELECCIONE EL CURSO</h1>
         </div>
+      </nav>
+      <div className="cuadro-container dos-columnas">
+        {["s1", "s2", "s3", "s4"].map((grupo) => (
+          <Link
+            key={grupo}
+            to={`/Listaexperimentos/secundaria/${grupo}`}
+            state={{ fondo: fondoImage }}
+            className="cuadros"
+          >
+            {grupo.slice(1)}º
+          </Link>
+        ))}
       </div>
-    </nav>
+      <img src={galileoImage} alt="Galileo" className="galileo-image" />
+    </div>
   );
 };
 
 export default Secundaria;
-
-// Estilos integrados en el componente
-const cuadroStyle = {
-  marginBottom: '20px',
-  width: '400px',
-  height: '200px',
-  borderRadius: '50px',
-  backgroundColor: 'rgb(120, 168, 128)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  textDecoration: 'none',
-  color: 'white',
-  fontSize: '50px',
-  fontWeight: 'bold',
-};
-
-const containerStyle = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: '20px',
-  justifyContent: 'center',
-  marginBottom: '20px',
-};
-
-const centradoStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  paddingLeft: '20px',
-};

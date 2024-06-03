@@ -7,6 +7,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden; /* Agregar esta propiedad para recortar el contenido que se desborda */
+
 }
 
 .barra {
@@ -52,8 +54,12 @@
 .recuadro {
   margin-bottom: 20px;
   width: 80%; /* Ajusta el ancho según sea necesario */
-  padding: 20px;
-  border-radius: 10px;
+  padding: 40px;
+  border-radius: 50px;
+  width: 30%; /* Ajusta el ancho para que quepan dos columnas */
+  font-size: 2em;
+  font-weight: bold;
+  opacity: 90%;
   background-color: rgba(121, 169, 129, 0.8); /* Verde de la empresa con opacidad */
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

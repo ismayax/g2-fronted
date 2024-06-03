@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Listaexperimentos from './components/Listaexperimentos';
@@ -10,6 +10,7 @@ import Contrasena from './components/OlvidoContra';
 import DetalleExperimento from './components/DetalleExperimento';
 import PlanesSuscripcion from './components/PlanesSuscripcion';
 import Pago from './components/pago';
+import AdminAmpliarPlan from './screens/AmpliarPlan';
 import Infantil from './components/infantil';
 import Primaria from './components/Primaria';
 import Experimento from './components/Experimentos';
@@ -18,74 +19,76 @@ import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
 import UserDashboard from './components/UserDashboard';
-import AdminPanel from './components/AdminPanel'; 
-import PrivateRoute from './PrivateRoute'; 
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import CentroDashboard from './components/CentroDashboard';
+import AdminPanel from './screens/adminpanel';
+import { AuthProvider, useAuth } from './screens/AuthContext';
+import CentroDashboard from './components/Actudocentes';
 import CrearDocente from './components/Creardocente';
+import AdminDocentes from './screens/AdminDocentes';
+import PrivateRoute from './screens/Rutas'; // Ajustar la importación del componente PrivateRoute
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [hasInteracted, setHasInteracted] = useState(false); // Nuevo estado
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const idTokenResult = await user.getIdTokenResult();
+        user.customClaims = idTokenResult.claims;
+        setUser(user);
+      } else {
+        setUser(null);
+      }
     });
     return () => unsubscribe();
-  }, []);
+  }, [setUser]);
 
-  if (loading) {
-    return <div>Cargando...</div>;
+  if (!user) {
+    return <Navigate to="/login" />;
   }
 
-  const userRole = localStorage.getItem('userRole');
-  const centroId = localStorage.getItem('centroId');
-
   return (
-    <AuthProvider value={{ user, setUser }}>
-      <Routes>
-        <Route path="/" element={!hasInteracted ? <Navigate to="/login" /> : (user ? <Navigate to={userRole === 'admin' ? `/centro-dashboard?centroId=${centroId}` : (userRole === 'docente' ? '/docente-dashboard' : '/home')} /> : <Login setHasInteracted={setHasInteracted} />)} />
-        <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user ? user.uid : null} />} />
-        <Route path="/login" element={<Login setHasInteracted={setHasInteracted} />} />
-        <Route path="/Primaria" element={<Primaria />} />
-        <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
-        <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
-        <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
-        <Route path="/experimento/:id" element={<Experimento />} />
-        <Route path="/Infantil" element={<Infantil />} />
-        <Route path="/secundaria" element={<Secundaria />} />
-        <Route path="/registro" element={<Registro />} />
-        <Route path="/contrasena" element={<Contrasena />} />
-        <Route path="/actividades/:id" element={<DetalleExperimento />} />
-        <Route path="/suscripcion" element={<PlanesSuscripcion />} />
-        <Route path="/pago" element={<Pago />} />
-        <Route path="/centro-dashboard" element={<CentroDashboard />} />
-        <Route path="/crear-docente" element={<CrearDocente />} />
-        <Route path="/Politica" element={<Politica />} />
-        <Route path="/Terminos" element={<Terminos />} />
-        <Route path="/Contactenos" element={<Contactenos />} />
-        <Route path="/superuser-dashboard" element={
-          <PrivateRoute role="admin">
-            <SuperuserDashboard />
-          </PrivateRoute>
-        } />
-        <Route path="/user-dashboard" element={
-          <PrivateRoute role="user">
-            <UserDashboard />
-          </PrivateRoute>
-        } />
-        <Route path="/admin-panel" element={
-          <PrivateRoute role="admin">
-            <AdminPanel />
-          </PrivateRoute>
-        } />
-      </Routes>
-    </AuthProvider>
+    <Routes>
+      <Route path="/" element={<Navigate to="/Paginaprincipal" />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user?.uid} />} />
+      <Route path="/Primaria" element={<Primaria />} />
+      <Route path="/Listaexperimentos/infantil/:grupo" element={<Listaexperimentos />} />
+      <Route path="/Listaexperimentos/primaria/:grupo" element={<Listaexperimentos />} />
+      <Route path="/Listaexperimentos/secundaria/:grupo" element={<Listaexperimentos />} />
+      <Route path="/experimento/:id" element={<Experimento />} />
+      <Route path="/Infantil" element={<Infantil />} />
+      <Route path="/secundaria" element={<Secundaria />} />
+      <Route path="/registro" element={<Registro />} />
+      <Route path="/contrasena" element={<Contrasena />} />
+      <Route path="/actividades/:id" element={<DetalleExperimento />} />
+      <Route path="/suscripcion" element={<PlanesSuscripcion />} />
+      <Route path="/pago" element={<Pago />} />
+      <Route path="/centro-dashboard" element={<CentroDashboard />} />
+      <Route path="/crear-docente" element={<CrearDocente />} />
+      <Route path="/Politica" element={<Politica />} />
+      <Route path="/Terminos" element={<Terminos />} />
+      <Route path="/Contactenos" element={<Contactenos />} />
+
+      {/* Private Routes */}
+      <Route element={<PrivateRoute role="admin" />}>
+        <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
+        <Route path="/admin-panel" element={<AdminPanel />} />
+        <Route path="/admin-docentes" element={<AdminDocentes />} />
+        <Route path="/ampliar-plan" element={<AdminAmpliarPlan />} />
+      </Route>
+
+      <Route element={<PrivateRoute role="user" />}>
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+      </Route>
+    </Routes>
   );
 }
 
-export default App;
+export default function Root() {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+}
