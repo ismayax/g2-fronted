@@ -33,55 +33,66 @@ function Contactenos() {
   };
 
   return (
-    <div className="contact-container">
-      <h1>Contáctenos</h1>
-      <form className="contact-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="from_name">Nombre:</label>
-          <input
-            type="text"
-            id="from_name"
-            name="from_name"
-            value={formData.from_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="from_email">Correo Electrónico:</label>
-          <input
-            type="email"
-            id="from_email"
-            name="from_email"
-            value={formData.from_email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="from_phone">Número de Teléfono:</label>
-          <input
-            type="tel"
-            id="from_phone"
-            name="from_phone"
-            value={formData.from_phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="message">Comentario:</label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-        <button type="submit" className="submit-button">Enviar</button>
-        {mensajeExito && <p className="success-message">{mensajeExito}</p>}
-      </form>
+    <div className="contact-page">
+      <div className="contact-container">
+        <h1>Contáctenos</h1>
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="from_name">
+              <i className="fas fa-user"></i> Nombre:
+            </label>
+            <input
+              type="text"
+              id="from_name"
+              name="from_name"
+              value={formData.from_name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="from_email">
+              <i className="fas fa-envelope"></i> Correo Electrónico:
+            </label>
+            <input
+              type="email"
+              id="from_email"
+              name="from_email"
+              value={formData.from_email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="from_phone">
+              <i className="fas fa-phone"></i> Número de Teléfono:
+            </label>
+            <input
+              type="tel"
+              id="from_phone"
+              name="from_phone"
+              value={formData.from_phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="message">
+              <i className="fas fa-comment"></i> Comentario:
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              required
+            ></textarea>
+          </div>
+          <button type="submit" className="submit-button">Enviar</button>
+          {mensajeExito && <p className="success-message">{mensajeExito}</p>}
+        </form>
+        <p className="info-message">Aquí puede poner en qué le podemos ayudar y le contactaremos pronto.</p>
+      </div>
     </div>
   );
 }
