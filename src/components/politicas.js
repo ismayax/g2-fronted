@@ -8,7 +8,7 @@ function Politica() {
         <div>
             <nav>
                 <div className="barra">
-                    <Link className="flecha" to="/Paginaprincipal">Volver</Link>
+                    <Link className="flecha" to="/Paginaprincipal"></Link>
                     <h1 className="elemento">Políticas de Privacidad</h1>
                 </div>
                 <br></br>
