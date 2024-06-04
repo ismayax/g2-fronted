@@ -1,0 +1,43 @@
+/* src/screens/AdminPanel.css */
+
+.admin-panel {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .panel-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .panel-card {
+    background-color: #6c9375; /* Verde similar al de la imagen */
+    border-radius: 10px;
+    width: 45%;
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s;
+  }
+  
+  .panel-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .panel-content {
+    background-color: #f2ebe3; 
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .panel-content h2 {
+    margin: 0;
+  }
+  
+  .panel-card a {
+    text-decoration: none;
+    color: inherit;
+  }
+  

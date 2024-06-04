@@ -1,36 +1,63 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { app, auth } from './firebaseConfig';  // Importar correctamente
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { app } from './firebaseConfig';
 
 function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const db = getFirestore(app);
 
   const signIn = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(getAuth(), email, password);
       const user = userCredential.user;
 
-      // Obtén el token del usuario para verificar los Custom Claims
-      const idTokenResult = await user.getIdTokenResult();
-      const role = idTokenResult.claims.role;
+      // Primero intenta obtener datos de admincentro
+      const adminRef = doc(db, 'admincentro', user.uid);
+      const adminSnap = await getDoc(adminRef);
 
-      console.log('Logged in!');
-      
-      // Redirige según el rol del usuario
-      if (role === 'superuser') {
-        navigate('/superuser-dashboard');
-      } else if (role === 'user') {
-        navigate('/user-dashboard');
-      } else {
-        navigate('/unknown-role'); // Opcional: para manejar roles desconocidos
+      if (adminSnap.exists()) {
+        const adminData = adminSnap.data();
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('centroId', adminData.centro_id);
+        navigate('/admin-panel');
+        return;
       }
+
+      // Luego intenta obtener datos de docentes
+      const docenteRef = doc(db, 'docentes', user.uid);
+      const docenteSnap = await getDoc(docenteRef);
+
+      if (docenteSnap.exists()) {
+        const docenteData = docenteSnap.data();
+        localStorage.setItem('userRole', 'docente');
+        localStorage.setItem('centroId', docenteData.centro_id);
+        navigate('/Paginaprincipal');
+        return;
+      }
+
+      // Verificar si el usuario es un administrador
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        if (userData.role === 'admin') {
+          localStorage.setItem('userRole', 'admin');
+          navigate('/admin-panel');
+          return;
+        }
+      }
+
+      // Si no se encuentra en ninguna colección, lanza error
+      throw new Error('User data not found. Please contact the administrator.');
     } catch (error) {
-      console.error('Authentication error:', error);
       setError(error.message);
+      console.error("Error de autenticación:", error);
     }
   };
 

@@ -1,19 +1,20 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../components/Auth"; 
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 
-function PrivateRoute({ allowedRoles }) {
-  const { currentUser, userData } = useAuth();
+const PrivateRoute = ({ role }) => {
+  const { user } = useAuth();
+  const userRole = localStorage.getItem('userRole');
 
-  if (!currentUser) {
+  if (!user) {
     return <Navigate to="/login" />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(userData.role)) {
-    return <Navigate to="/no-access" />;
+  if (userRole !== role) {
+    return <Navigate to="/" />;
   }
 
   return <Outlet />;
-}
+};
 
 export default PrivateRoute;

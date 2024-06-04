@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, setDoc } from 'firebase/firestore';
 import styles from "../assets/css/SuperuserDashboard.module.css"; 
 
 const auth = getAuth();
@@ -28,13 +28,19 @@ const SuperuserDashboard = () => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid; // Generate UID
+
       const newUser = {
         email,
         role,
         cycle,
-        uid: userCredential.user.uid,
+        uid: uid,
       };
-      await addDoc(collection(db, 'users'), newUser);
+
+      // Store the new admin information in Firestore
+      const userDocRef = doc(db, 'users', uid);
+      await setDoc(userDocRef, newUser);
+
       setUsers([...users, newUser]);
       setEmail('');
       setPassword('');
@@ -87,6 +93,7 @@ const SuperuserDashboard = () => {
           <select value={role} onChange={(e) => setRole(e.target.value)} required className={styles.select}>
             <option value="" disabled>Seleccione un rol</option>
             <option value="superuser">Superusuario</option>
+            <option value="admin">Administrador</option> {/* Añadir rol de administrador */}
             <option value="user">Usuario</option>
           </select>
           <input
@@ -122,6 +129,7 @@ const SuperuserDashboard = () => {
             <select value={role} onChange={(e) => setRole(e.target.value)} required className={styles.select}>
               <option value="" disabled>Seleccione un rol</option>
               <option value="superuser">Superusuario</option>
+              <option value="admin">Administrador</option> {/* Añadir rol de administrador */}
               <option value="user">Usuario</option>
             </select>
             <input
