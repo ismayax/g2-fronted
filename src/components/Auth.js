@@ -40,6 +40,19 @@ function Auth() {
         return;
       }
 
+      // Verificar si el usuario es un administrador
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        if (userData.role === 'admin') {
+          localStorage.setItem('userRole', 'admin');
+          navigate('/admin-panel');
+          return;
+        }
+      }
+
       // Si no se encuentra en ninguna colección, lanza error
       throw new Error('User data not found. Please contact the administrator.');
     } catch (error) {
