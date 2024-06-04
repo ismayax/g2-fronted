@@ -1,17 +1,16 @@
-// src/components/Paginaprincipal.js
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import BurguerButton from "./menudesple";
-import IdenUsuario from "./idenusuario";
 import fondoImage from "../assets/img/laboratorio.jpg";
-import galileoImage from "../assets/img/galileo3.png";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
 import Chat from "./Chat";
 
 const Paginaprincipal = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const menuRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -23,6 +22,20 @@ const Paginaprincipal = ({ userId }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+    });
+
+    return () => {
+      rive.stop();
     };
   }, []);
 
@@ -50,7 +63,7 @@ const Paginaprincipal = ({ userId }) => {
           <div className="medio">SECUNDARIA</div>
         </Link>
       </div>
-      <img src={galileoImage} alt="Galileo" className="galileo-image" />
+      <canvas ref={canvasRef} id="canvas" className="galileo-canvas"></canvas>
 
       <button onClick={() => setIsChatOpen(!isChatOpen)} className="chat-toggle-button">
         {isChatOpen ? 'Cerrar Chat' : 'Abrir Chat'}

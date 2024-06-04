@@ -1,12 +1,27 @@
-// Infantil.jsx
-import React from "react";
+import React, { useEffect, useRef } from "react"; // Agrega useEffect y useRef al import
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioinfantil.jpg";
-import galileoImage from "../assets/img/galileo3.png";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
 
 const Infantil = () => {
+  const canvasRef = useRef(null); // Define canvasRef utilizando el hook useRef
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+    });
+
+    return () => {
+      rive.stop();
+    };
+  }, []);
+
   return (
     <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
       <nav>
@@ -27,7 +42,7 @@ const Infantil = () => {
           </Link>
         ))}
       </div>
-      <img src={galileoImage} alt="Galileo" className="galileo-image" />
+      <canvas ref={canvasRef} id="canvas" className="galileo-canvas"></canvas>
     </div>
   );
 };
