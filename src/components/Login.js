@@ -51,6 +51,19 @@ const Login = () => {
         console.log(`No data found in docentes for UID: ${userId}`);
       }
 
+      // Verificar si el usuario es un administrador
+      const userRef = doc(db, 'users', userId);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        if (userData.role === 'admin') {
+          localStorage.setItem('userRole', 'admin');
+          navigate('/admin-panel');
+          return;
+        }
+      }
+
       throw new Error('User data not found. Please contact the administrator.');
     } catch (error) {
       setError(error.message);
