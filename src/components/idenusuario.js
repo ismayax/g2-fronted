@@ -11,7 +11,7 @@ function IdenUsuario() {
     const fetchUserName = async () => {
       if (currentUser) {
         try {
-          const userDoc = doc(firestore, 'subcripcion', currentUser.uid);
+          const userDoc = doc(firestore, 'suscripcion', currentUser.uid);
           const docSnap = await getDoc(userDoc);
           if (docSnap.exists()) {
             const { nombre } = docSnap.data();

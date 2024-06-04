@@ -9,6 +9,7 @@ const CrearDocente = () => {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [nivel, setNivel] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
@@ -28,11 +29,14 @@ const CrearDocente = () => {
       // Guardar datos adicionales del usuario en Firestore
       await setDoc(doc(db, 'docentes', user.uid), {
         username,
-        email
+        email,
+        nivel,
+        activo: false, // Por defecto, el docente no está activo
+        centroId: "idDelCentroActual" // Ajusta esto según sea necesario
       });
 
       // Redirigir a la página de lista de docentes o dashboard
-      navigate('/docente-dashboard');
+      navigate('/admin-docentes');
     } catch (error) {
       setError(error.message);
     }
@@ -41,8 +45,8 @@ const CrearDocente = () => {
   return (
     <div className={styles.container}>
       <h2>Crear Nuevo Docente</h2>
-      <form onSubmit={handleCreateDocente}>
-        <div className={styles["form-group"]}>
+      <form onSubmit={handleCreateDocente} className={styles.form}>
+        <div className={styles.formGroup}>
           <label htmlFor="username">Nombre de usuario</label>
           <input
             type="text"
@@ -52,7 +56,7 @@ const CrearDocente = () => {
             required
           />
         </div>
-        <div className={styles["form-group"]}>
+        <div className={styles.formGroup}>
           <label htmlFor="email">Correo electrónico</label>
           <input
             type="email"
@@ -62,7 +66,21 @@ const CrearDocente = () => {
             required
           />
         </div>
-        <div className={styles["form-group"]}>
+        <div className={styles.formGroup}>
+          <label htmlFor="nivel">Etapa y Ciclo Adjunto</label>
+          <select
+            id="nivel"
+            value={nivel}
+            onChange={(e) => setNivel(e.target.value)}
+            required
+          >
+            <option value="">Seleccionar</option>
+            <option value="infantil">Infantil</option>
+            <option value="primaria">Primaria</option>
+            <option value="secundaria">Secundaria</option>
+          </select>
+        </div>
+        <div className={styles.formGroup}>
           <label htmlFor="password">Contraseña</label>
           <input
             type="password"
@@ -72,7 +90,7 @@ const CrearDocente = () => {
             required
           />
         </div>
-        <div className={styles["form-group"]}>
+        <div className={styles.formGroup}>
           <label htmlFor="repeatPassword">Repita la contraseña</label>
           <input
             type="password"
@@ -83,7 +101,7 @@ const CrearDocente = () => {
           />
         </div>
         {error && <p className={styles.error}>{error}</p>}
-        <button type="submit" className={styles["btn-create"]}>Crear Docente</button>
+        <button type="submit" className={styles.btnCreate}>Crear Docente</button>
       </form>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { app } from './firebaseConfig'; // Asegúrate de importar correctamente
+import { app } from './firebaseConfig';
 
 function Auth() {
   const [email, setEmail] = useState('');
@@ -16,34 +16,32 @@ function Auth() {
       const userCredential = await signInWithEmailAndPassword(getAuth(), email, password);
       const user = userCredential.user;
 
-      // Obtén los datos del usuario desde Firestore
-      const userRef = doc(db, 'admincentro', user.uid); // Asegúrate de que el UID del usuario corresponda
-      const userSnap = await getDoc(userRef);
+      // Primero intenta obtener datos de admincentro
+      const adminRef = doc(db, 'admincentro', user.uid);
+      const adminSnap = await getDoc(adminRef);
 
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        const { role, centro_id } = userData;
-
-        // Guardar el usuario en el contexto global
-        setUser(userCredential.user);
-
-        // Guardar el rol del usuario en el almacenamiento local
-        localStorage.setItem('userRole', role);
-        localStorage.setItem('centroId', centro_id); // Asegúrate de que esto es un string
-
-        // Redirigir al usuario según su rol
-        if (role === 'admin') {
-          navigate('/superuser-dashboard');
-        } else if (role === 'docente') {
-          navigate('/docente-dashboard');
-        } else if (role === 'centro_educativo') {
-          navigate(`/centro-dashboard?centroId=${centro_id}`);
-        } else {
-          navigate('/home');
-        }
-      } else {
-        throw new Error('User data not found. Please contact the administrator.');
+      if (adminSnap.exists()) {
+        const adminData = adminSnap.data();
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('centroId', adminData.centro_id);
+        navigate('/admin-panel');
+        return;
       }
+
+      // Luego intenta obtener datos de docentes
+      const docenteRef = doc(db, 'docentes', user.uid);
+      const docenteSnap = await getDoc(docenteRef);
+
+      if (docenteSnap.exists()) {
+        const docenteData = docenteSnap.data();
+        localStorage.setItem('userRole', 'docente');
+        localStorage.setItem('centroId', docenteData.centro_id);
+        navigate('/Paginaprincipal');
+        return;
+      }
+
+      // Si no se encuentra en ninguna colección, lanza error
+      throw new Error('User data not found. Please contact the administrator.');
     } catch (error) {
       setError(error.message);
       console.error("Error de autenticación:", error);

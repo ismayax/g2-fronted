@@ -1,6 +1,5 @@
-// src/components/Chat.js
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, addDoc, doc, setDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import '../assets/css/Chat.css';
 
@@ -39,6 +38,13 @@ const Chat = ({ userId, closeChat }) => {
     const chatId = [userId, selectedUserId].sort().join('_');
     setActiveChat(chatId);
     setActiveUser(selectedUserId);
+
+    // Crear el documento de chat si no existe
+    const chatDocRef = doc(db, 'messages', chatId);
+    await setDoc(chatDocRef, {
+      participants: [userId, selectedUserId]
+    }, { merge: true });
+
     loadMessages(chatId);
   };
 

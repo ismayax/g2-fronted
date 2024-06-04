@@ -21,29 +21,34 @@ const Login = () => {
       
       const userId = userCredential.user.uid;
 
-      // Obtener información adicional del usuario desde las colecciones en Firestore
+      // Verificar en la colección admincentro
       const adminCentroRef = doc(db, 'admincentro', userId);
       const adminCentroSnap = await getDoc(adminCentroRef);
 
       if (adminCentroSnap.exists()) {
         const adminCentroData = adminCentroSnap.data();
-        console.log('AdminCentro data:', adminCentroData); // Agrega un log para depurar
+        console.log('AdminCentro data:', adminCentroData);
         localStorage.setItem('userRole', 'admin');
         localStorage.setItem('centroId', adminCentroData.centro_id[0]);
         navigate('/admin-panel');
         return;
+      } else {
+        console.log(`No data found in admincentro for UID: ${userId}`);
       }
 
+      // Verificar en la colección docentes
       const docenteRef = doc(db, 'docentes', userId);
       const docenteSnap = await getDoc(docenteRef);
 
       if (docenteSnap.exists()) {
         const docenteData = docenteSnap.data();
-        console.log('Docente data:', docenteData); // Agrega un log para depurar
+        console.log('Docente data:', docenteData);
         localStorage.setItem('userRole', 'docente');
-        localStorage.setItem('centroId', docenteData.centro_id[0]);
+        localStorage.setItem('centroId', docenteData.centro_id);
         navigate('/Paginaprincipal');
         return;
+      } else {
+        console.log(`No data found in docentes for UID: ${userId}`);
       }
 
       throw new Error('User data not found. Please contact the administrator.');
