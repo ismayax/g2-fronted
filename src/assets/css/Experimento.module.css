@@ -163,13 +163,14 @@ html, body {
 .experimentoDescription, .hipotesis, .explicacion, .conclusion {
   color: #ffffff;
   font-size: 30px;
-  margin-top: 40px;
+  margin-top: 20px;
   margin-bottom: 20px;
 }
 
 .hipotesis h3, .conclusion h3 {
   color: #79a981;
   font-size: 30px;
+  
 }
 
 .materialsHeader {
@@ -236,7 +237,7 @@ html, body {
 
 .paso {
   font-size: 24px;
-  margin-top: 20px;
+  margin-top: 5%;
   margin-bottom: 20px;
 }
 
@@ -260,14 +261,34 @@ html, body {
   .controlButton {
     font-size: 1em;
     padding: 5px 10px;
+    z-index: 1000; /* O cualquier otro valor alto que garantice que esté en la capa superior */
   }
 
   .galileoImage {
-    display: none;
+    position: absolute;
+    bottom: 5%;
+    right: 5%; /* Ajusta el valor para mover el elemento más a la derecha */
+    width: 20%;
+    height: auto;
+    margin-right: 3%; /* Ajuste para mover el componente hacia la derecha */
   }
+  
 }
 
 
 .buttonSeparator {
   margin: 0 120%; /* Puedes ajustar el valor de margen según tus preferencias */
 }
+
+
+.galileoAnimation {
+  position: absolute;
+  bottom: 5%;
+  right: 5%; /* Ajusta el valor para mover el elemento más a la derecha */
+  width: 20%;
+  height: auto;
+  margin-right: 3%;
+}
+
+
+

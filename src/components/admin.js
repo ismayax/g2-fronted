@@ -1,29 +1,45 @@
-// C:\Users\usuario\Desktop\g2-fronted\src\components\admin.js
-const admin = require('firebase-admin');
-const serviceAccount = require('./path/to/your/serviceAccountKey.json'); // Asegúrate de que la ruta al archivo de credenciales sea correcta
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { useAuth } from './contexts/AuthContext'; // Importa tu contexto de autenticación
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://your-database-name.firebaseio.com'
-});
+const Auth = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Importa la función de inicio de sesión desde el contexto de autenticación
 
-const auth = admin.auth();
-module.exports = { auth };
+  const handleSignIn = async () => {
+    try {
+      // Realiza la autenticación con Firebase Authentication
+      await login(email, password);
+      
+      // Redirige al usuario según su rol después de iniciar sesión
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error de autenticación:', error);
+      setError(error.message);
+    }
+  };
 
-const { auth } = require('./admin'); // Importa la configuración de Firebase Admin SDK
+  return (
+    <div>
+      <h1>Iniciar Sesión</h1>
+      <form onSubmit={handleSignIn}>
+        <div>
+          <label>Email:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div>
+          <label>Contraseña:</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+      {error && <p>Error: {error}</p>}
+    </div>
+  );
+};
 
-async function setCustomUserClaims(uid, role) {
-  try {
-    // Asigna el rol al usuario
-    await auth.setCustomUserClaims(uid, { role });
-    console.log(`Role ${role} assigned to user ${uid}`);
-  } catch (error) {
-    console.error('Error assigning role:', error);
-  }
-}
-
-// Ejemplo de uso
-const uid = 'user-uid'; // UID del usuario al que deseas asignar un rol
-const role = 'superuser'; // El rol que deseas asignar, puede ser 'superuser' o 'user'
-
-setCustomUserClaims(uid, role);
+export default Auth;

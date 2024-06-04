@@ -1,23 +1,57 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import styles from "../assets/css/Login.module.css";
 import Logo from "../assets/img/Logo_educación.png";
 
-const Login = ({ setHasInteracted }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
+  const db = getFirestore();
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setHasInteracted(true); // Marca que el usuario ha interactuado
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
-      navigate("/Paginaprincipal");
+      
+      const userId = userCredential.user.uid;
+
+      // Verificar en la colección admincentro
+      const adminCentroRef = doc(db, 'admincentro', userId);
+      const adminCentroSnap = await getDoc(adminCentroRef);
+
+      if (adminCentroSnap.exists()) {
+        const adminCentroData = adminCentroSnap.data();
+        console.log('AdminCentro data:', adminCentroData);
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('centroId', adminCentroData.centro_id[0]);
+        navigate('/admin-panel');
+        return;
+      } else {
+        console.log(`No data found in admincentro for UID: ${userId}`);
+      }
+
+      // Verificar en la colección docentes
+      const docenteRef = doc(db, 'docentes', userId);
+      const docenteSnap = await getDoc(docenteRef);
+
+      if (docenteSnap.exists()) {
+        const docenteData = docenteSnap.data();
+        console.log('Docente data:', docenteData);
+        localStorage.setItem('userRole', 'docente');
+        localStorage.setItem('centroId', docenteData.centro_id);
+        navigate('/Paginaprincipal');
+        return;
+      } else {
+        console.log(`No data found in docentes for UID: ${userId}`);
+      }
+
+      throw new Error('User data not found. Please contact the administrator.');
     } catch (error) {
       setError(error.message);
       console.error("Error de autenticación:", error);
@@ -66,4 +100,3 @@ const Login = ({ setHasInteracted }) => {
 };
 
 export default Login;
-
