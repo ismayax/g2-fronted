@@ -1,7 +1,5 @@
 .dashboard {
     padding: 20px;
-    background-color: #f5f5f5;
-    min-height: 100vh;
   }
   
   .button {
@@ -11,9 +9,6 @@
     padding: 10px 20px;
     cursor: pointer;
     text-decoration: none;
-    border-radius: 5px;
-    margin: 10px 0;
-    display: inline-block;
   }
   
   .button:hover {
@@ -21,24 +16,17 @@
   }
   
   .docentesList {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
     margin-top: 20px;
   }
   
   .docenteItem {
-    background-color: white;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
   }
   
   .docenteInfo {
-    flex-grow: 1;
+    margin-bottom: 10px;
   }
   
   .docenteActions {
@@ -53,12 +41,3 @@
   .deactivate {
     background-color: #dc3545;
   }
-  
-  .activate:hover {
-    background-color: #218838;
-  }
-  
-  .deactivate:hover {
-    background-color: #c82333;
-  }
-  
