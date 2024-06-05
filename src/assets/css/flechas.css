@@ -6,3 +6,26 @@
     background-size: cover;
   }
   
+
+  @media (max-width: 1024px) { 
+    .flecha {
+      display: inline-block;
+      width: 30px; 
+      height: 30px; 
+      background-image: url(../img/flecha-izquierdaprin.png);
+      background-size: cover;
+    }
+    
+  }
+  
+  @media (max-width: 768px) { 
+    .flecha {
+      display: inline-block;
+      width: 20px; 
+      height: 20px; 
+      background-image: url(../img/flecha-izquierdaprin.png);
+      background-size: cover;
+    }
+    
+  }
+  

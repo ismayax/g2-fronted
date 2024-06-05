@@ -7,8 +7,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden; /* Agregar esta propiedad para recortar el contenido que se desborda */
-
+  overflow: hidden;
 }
 
 .barra {
@@ -104,4 +103,118 @@
   width: 19%;
   height: auto;
   margin-right: 4%;
+} 
+
+.contenido {
+  padding: 20px;
+  margin-top: 80px; /* Para evitar superposición con la barra */
+}
+
+.contenido h2 {
+  font-size: 1.5em;
+  color: #333;
+}
+
+.contenido p, .contenido ul {
+  font-size: 1em;
+  color: #666;
+  line-height: 1.5;
+}
+
+.contenido ul {
+  padding-left: 20px;
+}
+
+.contenido ul li {
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1023px){
+  .galileo-image {
+    width: 25%;
+    bottom: -5%;
+  }
+  .cuadros {
+    width: 45%;  
+    font-size: 1.5em;
+      padding: 20px;
+  } 
+   
+
+  .contenido {
+    padding: 15px;
+  }
+
+  .contenido h2 {
+    font-size: 1.3em;
+  }
+
+  .contenido p, .contenido ul {
+    font-size: 0.9em;
+  }
+}
+
+@media (min-width: 1024px) { 
+  .cuadros {
+    width: 45%;  
+    font-size: 1.5em;
+      padding: 20px;
+  } 
+  
+  .galileo-image {
+    width: 15%;
+    bottom: -5%;
+  }
+
+  .contenido {
+    padding: 15px;
+  }
+
+  .contenido h2 {
+    font-size: 1.3em;
+  }
+
+  .contenido p, .contenido ul {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 530px) { 
+  .barra {
+    padding: 15px;
+    flex-direction: row;
+  }
+
+  .elemento {
+    font-size: 1.5em;
+  }
+
+  .menu-lateral {
+    width: 200px;
+  }
+
+  .cuadros {
+    width: 80%;  
+    font-size: 1.2em;
+    padding: 20px;
+  }
+
+  .galileo-image {
+    width: 28%;
+    bottom: -3%;
+    margin-right: 2%;
+  }
+
+  .contenido {
+    padding: 10px;
+    margin-top: 20px;
+  }
+
+  .contenido h2 {
+    font-size: 1.2em;
+  }
+
+  .contenido p, .contenido ul {
+    font-size: 0.8em;
+  }
 }
