@@ -86,6 +86,9 @@
   margin: 10px; /* Espaciado entre los cuadros */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
+  z-index: 10; /* Asegura que el canvas esté detrás de otros elementos */
+
+  
 }
 
 .cuadros:hover {
@@ -98,7 +101,7 @@
 
 .galileo-image {
   position: absolute;
-  bottom: -9%;
+  bottom: -11%;
   right: 0;
   width: 19%;
   height: auto;
@@ -217,4 +220,13 @@
   .contenido p, .contenido ul {
     font-size: 0.8em;
   }
+}
+
+canvas {
+  position: fixed;
+  top: 5%;
+  left: 4%;
+  width: 95%;
+  height: 95%;
+  z-index: 1;  
 }

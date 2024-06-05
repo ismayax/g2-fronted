@@ -4,7 +4,8 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #79A981;
+  background-color: #79A981; 
+  
 }
 
 .content {
@@ -17,12 +18,14 @@
 /* Estilos del logo */
 .logo-container {
   text-align: center;
+  
 }
 
 .logo {
   max-width: 50%;
   max-height: 100%;
   margin-bottom: 20px;
+  
 }
 
 /* Estilos del formulario */
@@ -38,6 +41,7 @@
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  
 }
 
 .input {
@@ -57,6 +61,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  
 }
 
 .btn-login:hover {

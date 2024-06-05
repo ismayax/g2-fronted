@@ -9,7 +9,7 @@ const CentroDashboard = () => {
 
   useEffect(() => {
     const fetchDocentes = async () => {
-      const q = query(collection(db, 'docentes'), where('centroId', '==', 'idDelCentroActual')); // Ajusta el centroId según sea necesario
+      const q = query(collection(db, 'docentes'), where('centro_id', '==', 'idDelCentroActual')); // Ajusta el centro_id según sea necesario
       const querySnapshot = await getDocs(q);
       const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDocentes(docentesList);
@@ -40,15 +40,20 @@ const CentroDashboard = () => {
       <div className={styles.docentesList}>
         {docentes.map(docente => (
           <div key={docente.id} className={styles.docenteItem}>
-            <p>Email: {docente.email}</p>
-            <p>Nivel: {docente.nivel}</p>
-            <p>Activo: {docente.activo ? 'Sí' : 'No'}</p>
-            <button
-              onClick={() => handleActivateDocente(docente.id, !docente.activo)}
-              className={styles.button}
-            >
-              {docente.activo ? 'Desactivar' : 'Activar'}
-            </button>
+            <div className={styles.docenteInfo}>
+              <p><strong>Email:</strong> {docente.email}</p>
+              <p><strong>Nivel:</strong> {docente.nivel}</p>
+              <p><strong>Activo:</strong> {docente.activo ? 'Sí' : 'No'}</p>
+            </div>
+            <div className={styles.docenteActions}>
+              <button
+                onClick={() => handleActivateDocente(docente.id, !docente.activo)}
+                className={`${styles.button} ${docente.activo ? styles.deactivate : styles.activate}`}
+              >
+                {docente.activo ? 'Desactivar' : 'Activar'}
+              </button>
+              <Link to={`/editar-docente/${docente.id}`} className={styles.button}>Editar</Link>
+            </div>
           </div>
         ))}
       </div>

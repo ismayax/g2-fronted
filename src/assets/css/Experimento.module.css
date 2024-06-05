@@ -224,13 +224,13 @@ html, body {
 }
 
 .explicacion {
-  background-color: #f0f5f0;
-  border: 2px solid #79a981;
+  background-color: #f0f5f000;
+  border: 3px solid #79a981;
   padding: 20px;
   border-radius: 8px;
   margin-top: 5%;
   margin-bottom: 20px;
-  color: #333;
+  color: #ffffff;
   font-size: 30px;
 }
 
@@ -242,9 +242,9 @@ html, body {
 }
 
 .bocadillo {
-  font-size: 26px;
-  background: #f0f5f0;
-  color: #333;
+  font-size: 28px;
+  background: #ffffff00;
+  color: #ffffff;
   padding: 15px;
   border-radius: 10px;
   margin-top: 10px;
@@ -284,10 +284,10 @@ html, body {
 .galileoAnimation {
   position: absolute;
   bottom: 5%;
-  right: 5%; /* Ajusta el valor para mover el elemento más a la derecha */
+  right: 6%; /* Ajusta el valor para mover el elemento más a la derecha */
   width: 20%;
   height: auto;
-  margin-right: 3%;
+  margin-right: 1%;
 }
 
 

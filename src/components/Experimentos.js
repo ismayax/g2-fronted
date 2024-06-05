@@ -7,6 +7,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa';
+import { Rive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 
 function Experimento() {
@@ -17,6 +18,7 @@ function Experimento() {
   const { id } = useParams();
   const sliderRef = useRef(null);
   const navigate = useNavigate();
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     const fetchExperimento = async () => {
@@ -38,11 +40,11 @@ function Experimento() {
       window.speechSynthesis.cancel();
       const speech = new SpeechSynthesisUtterance(texto);
       speech.lang = 'es-ES';
-      speech.pitch = 0.6;  // Ajusta el tono para que sea más grave
-      speech.rate = 1;   // Ajusta la velocidad para que sea más pausada
-      speech.volume = 1;   // Ajusta el volumen
+      speech.pitch = 0.6;
+      speech.rate = 1;
+      speech.volume = 1;
       const voices = window.speechSynthesis.getVoices();
-      speech.voice = voices.find(voice => voice.name === 'Google español');  // Busca una voz masculina si está disponible
+      speech.voice = voices.find(voice => voice.name === 'Google español');
       window.speechSynthesis.speak(speech);
     }
   };
@@ -75,18 +77,19 @@ function Experimento() {
   }, []);
 
   useEffect(() => {
-    const canvas = document.getElementById('canvas');
-    const rive = new window.rive.Rive({
-      src: galileoRive,
-      canvas,
-      autoplay: true,
-      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
-    });
+    if (canvasRef.current) {
+      const rive = new Rive({
+        src: galileoRive,
+        canvas: canvasRef.current,
+        autoplay: true,
+        layout: new Layout({ fit: Fit.Cover, alignment: Alignment.Center }),
+      });
 
-    return () => {
-      rive.stop();
-    };
-  }, []);
+      return () => {
+        rive.cleanup();
+      };
+    }
+  }, [canvasRef]);
 
   const handleSlideChange = (oldIndex, newIndex) => {
     window.speechSynthesis.cancel();
@@ -105,7 +108,7 @@ function Experimento() {
 
   const renderSlides = () => {
     if (!experimento) {
-      return null; // Retorna null si experimento es null para evitar errores
+      return null;
     }
     const slides = [
       <div key="descripcion">
@@ -213,7 +216,7 @@ function Experimento() {
           </div>
         </div>
       </div>
-      <canvas id="canvas"></canvas>
+      <canvas ref={canvasRef} id="canvas"></canvas>
     </div>
   );
 }
