@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { useAuth } from './contexts/AuthContext'; // Importa tu contexto de autenticación
+import { useAuth } from '../assets/AuthContext'; // Importa tu contexto de autenticación
 
 const Auth = () => {
   const [email, setEmail] = useState('');

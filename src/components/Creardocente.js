@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import styles from '../assets/css/CrearDocente.module.css';
 
 const CrearDocente = () => {
@@ -27,12 +27,19 @@ const CrearDocente = () => {
       const user = userCredential.user;
 
       // Guardar datos adicionales del usuario en Firestore
-      await setDoc(doc(db, 'docentes', user.uid), {
+      const nuevoDocenteRef = doc(db, 'docentes', user.uid);
+      await setDoc(nuevoDocenteRef, {
         username,
         email,
         nivel,
         activo: false, // Por defecto, el docente no está activo
-        centroId: "idDelCentroActual" // Ajusta esto según sea necesario
+        centro_id: "idDelCentroActual" // Ajusta esto según sea necesario
+      });
+
+      // Actualizar la colección de 'centros_educativos' con el nuevo docente ID
+      const centroEducativoRef = doc(db, 'centros_educativos', 'idDelCentroActual');
+      await updateDoc(centroEducativoRef, {
+        docente_id: arrayUnion(user.uid)
       });
 
       // Redirigir a la página de lista de docentes o dashboard

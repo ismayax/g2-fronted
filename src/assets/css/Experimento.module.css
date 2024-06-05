@@ -284,10 +284,10 @@ html, body {
 .galileoAnimation {
   position: absolute;
   bottom: 5%;
-  right: 5%; /* Ajusta el valor para mover el elemento más a la derecha */
+  right: 6%; /* Ajusta el valor para mover el elemento más a la derecha */
   width: 20%;
   height: auto;
-  margin-right: 3%;
+  margin-right: 1%;
 }
 
 

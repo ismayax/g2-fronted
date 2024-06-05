@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import styles from '../assets/css/Actudocentes.module.css';
+import styles from '../assets/css/AdminDocentes.module.css';
 
 const AdminDocentes = () => {
   const [docentes, setDocentes] = useState([]);
@@ -9,7 +9,7 @@ const AdminDocentes = () => {
 
   useEffect(() => {
     const fetchDocentes = async () => {
-      const q = query(collection(db, 'docentes'), where('centroId', '==', 'idDelCentroActual')); // Ajusta el centroId según sea necesario
+      const q = query(collection(db, 'docentes'), where('centro_id', '==', 'idDelCentroActual')); // Ajusta el centro_id según sea necesario
       const querySnapshot = await getDocs(q);
       const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDocentes(docentesList);

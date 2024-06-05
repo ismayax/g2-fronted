@@ -1,25 +1,26 @@
-import React, { useEffect, useRef } from "react"; // Agrega useEffect y useRef al import
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioinfantil.jpg";
-import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
+import { Rive, Layout } from '@rive-app/react-canvas';
 
 const Infantil = () => {
-  const canvasRef = useRef(null); // Define canvasRef utilizando el hook useRef
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const rive = new window.rive.Rive({
-      src: galileoRive,
-      canvas,
-      autoplay: false,
-      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
-    });
+    if (canvasRef.current) {
+      const rive = new Rive({
+        src: '/assets/riv/galileo_1_sin_fondo.riv', // Asegúrate de que la ruta sea correcta
+        canvas: canvasRef.current,
+        autoplay: true,
+        layout: new Layout({ fit: 'cover', alignment: 'center' }),
+      });
 
-    return () => {
-      rive.stop();
-    };
+      return () => {
+        rive.cleanup();
+      };
+    }
   }, []);
 
   return (
