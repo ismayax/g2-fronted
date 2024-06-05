@@ -4,23 +4,24 @@ import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioinfantil.jpg";
 import { Rive, Layout } from '@rive-app/react-canvas';
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
+
 
 const Infantil = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const rive = new Rive({
-        src: '/assets/riv/galileo_1_sin_fondo.riv', // Asegúrate de que la ruta sea correcta
-        canvas: canvasRef.current,
-        autoplay: true,
-        layout: new Layout({ fit: 'cover', alignment: 'center' }),
-      });
+    const canvas = canvasRef.current;
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+    });
 
-      return () => {
-        rive.cleanup();
-      };
-    }
+    return () => {
+      rive.stop();
+    };
   }, []);
 
   return (
