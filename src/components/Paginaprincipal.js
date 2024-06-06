@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import BurguerButton from "./menudesple";
 import fondoImage from "../assets/img/laboratorio.jpg";
-import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 import Chat from "./Chat";
 
 const Paginaprincipal = ({ userId }) => {
@@ -31,7 +31,10 @@ const Paginaprincipal = ({ userId }) => {
       src: galileoRive,
       canvas,
       autoplay: false,
-      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+      layout: new window.rive.Layout({
+        fit: 'cover',
+        alignment: 'center'
+      }),
     });
 
     return () => {
@@ -63,7 +66,15 @@ const Paginaprincipal = ({ userId }) => {
           <div className="medio">SECUNDARIA</div>
         </Link>
       </div>
-      <canvas ref={canvasRef} id="canvas" className="galileo-canvas"></canvas>
+      
+      <canvas 
+        ref={canvasRef} 
+        id="canvas" 
+        className="galileo-canvas" 
+        width="1920" 
+        height="1080"
+        style={{ width: '90%', height: 'auto' }}
+      ></canvas>
 
       <button onClick={() => setIsChatOpen(!isChatOpen)} className="chat-toggle-button">
         {isChatOpen ? 'Cerrar Chat' : 'Abrir Chat'}

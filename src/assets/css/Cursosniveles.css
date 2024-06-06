@@ -8,13 +8,15 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
+  z-index: 100;
+
 }
 
 .barra {
   width: auto;
   max-width: 100%;
   padding: 20px;
-  background-color: rgba(51, 51, 51, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   color: white;
   text-align: center;
   box-sizing: border-box;
@@ -82,18 +84,21 @@
   color: white;
   font-size: 2em;
   font-weight: bold;
-  width: 30%; /* Ajusta el ancho para que quepan dos columnas */
+  width: 20%; /* Ajusta el ancho para que sean más estrechos */
   margin: 10px; /* Espaciado entre los cuadros */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
   z-index: 10; /* Asegura que el canvas esté detrás de otros elementos */
-
-  
 }
 
 .cuadros:hover {
   transform: scale(1.05);
 }
+
+.chat-toggle-button {
+  z-index: 10; /* Asegura que el canvas esté detrás de otros elementos */
+}
+
 
 .medio {
   margin-top: 10px;
@@ -225,8 +230,6 @@
 canvas {
   position: fixed;
   top: 5%;
-  left: 4%;
-  width: 95%;
-  height: 95%;
+  left: 7%;
   z-index: 1;  
 }

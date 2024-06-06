@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import "../assets/css/Listaexperimentos.css";
-import galileoImage from "../assets/img/galileo3.png"; // Import the Galileo image
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
@@ -32,6 +32,22 @@ const Listaexperimentos = () => {
         fetchActividades();
     }, [grupo]);
 
+    const canvasRef = useRef(null);
+
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      const rive = new window.rive.Rive({
+        src: galileoRive,
+        canvas,
+        autoplay: false,
+        layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+      });
+  
+      return () => {
+        rive.stop();
+      };
+    }, []);
+
     return (
         <div className="pagina-experimentos-container" style={{ backgroundImage: `url(${fondoImage})` }}>
             <div className="barra">
@@ -58,8 +74,15 @@ const Listaexperimentos = () => {
                 )}
             </div>
 
-            <img src={galileoImage} alt="Galileo" className="galileo-image" />
-        </div>
+            <canvas 
+        ref={canvasRef} 
+        id="canvas" 
+        className="galileo-canvas" 
+        width="1920" 
+        height="1080"
+        style={{ width: '90%', height: 'auto' }}
+      ></canvas>        
+      </div>
     );
 };
 

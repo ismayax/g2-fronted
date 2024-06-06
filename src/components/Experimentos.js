@@ -216,8 +216,14 @@ function Experimento() {
           </div>
         </div>
       </div>
-      <canvas ref={canvasRef} id="canvas"></canvas>
-    </div>
+      <canvas 
+        ref={canvasRef} 
+        id="canvas" 
+        className="galileo-canvas" 
+        width="1920" 
+        height="1080"
+        style={{ width: '90%', height: 'auto' }}
+      ></canvas>      </div>
   );
 }
 

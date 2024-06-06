@@ -6,7 +6,6 @@ import fondoImage from "../assets/img/laboratorioinfantil.jpg";
 import { Rive, Layout } from '@rive-app/react-canvas';
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
 
-
 const Infantil = () => {
   const canvasRef = useRef(null);
 
@@ -44,7 +43,14 @@ const Infantil = () => {
           </Link>
         ))}
       </div>
-      <canvas ref={canvasRef} id="canvas" className="galileo-canvas"></canvas>
+      <canvas 
+        ref={canvasRef} 
+        id="canvas" 
+        className="galileo-canvas" 
+        width="1920" 
+        height="1080"
+        style={{ width: '90%', height: 'auto' }}
+      ></canvas>
     </div>
   );
 };

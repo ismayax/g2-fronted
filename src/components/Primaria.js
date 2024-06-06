@@ -1,12 +1,28 @@
 // Primaria.jsx (Ejemplo)
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioprimaria.jpg";
-import galileoImage from "../assets/img/galileo3.png";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
 
 const Primaria = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+    });
+
+    return () => {
+      rive.stop();
+    };
+  }, []);
+  
   return (
     <div className="pagina-principal-container" style={{ backgroundImage: `url(${fondoImage})` }}>
       <nav>
@@ -27,8 +43,15 @@ const Primaria = () => {
           </Link>
         ))}
       </div>
-      <img src={galileoImage} alt="Galileo" className="galileo-image" />
-    </div>
+      <canvas 
+        ref={canvasRef} 
+        id="canvas" 
+        className="galileo-canvas" 
+        width="1920" 
+        height="1080"
+        style={{ width: '90%', height: 'auto' }}
+      ></canvas>    
+      </div>
   );
 };
 
