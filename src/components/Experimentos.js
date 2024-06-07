@@ -7,8 +7,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa';
-import { Rive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
-import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 
 function Experimento() {
   const [experimento, setExperimento] = useState(null);
@@ -78,16 +76,12 @@ function Experimento() {
 
   useEffect(() => {
     if (canvasRef.current) {
-      const rive = new Rive({
-        src: galileoRive,
+      new window.rive.Rive({
+        src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`,
         canvas: canvasRef.current,
         autoplay: true,
-        layout: new Layout({ fit: Fit.Cover, alignment: Alignment.Center }),
+        layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
       });
-
-      return () => {
-        rive.cleanup();
-      };
     }
   }, [canvasRef]);
 
@@ -223,7 +217,8 @@ function Experimento() {
         width="1920" 
         height="1080"
         style={{ width: '90%', height: 'auto' }}
-      ></canvas>      </div>
+      ></canvas>
+    </div>
   );
 }
 

@@ -3,7 +3,6 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import "../assets/css/Listaexperimentos.css";
-import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv'; // Añadido
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
@@ -35,17 +34,17 @@ const Listaexperimentos = () => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
-      const canvas = canvasRef.current;
-      const rive = new window.rive.Rive({
-        src: galileoRive,
-        canvas,
-        autoplay: false,
-        layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
-      });
-  
-      return () => {
-        rive.stop();
-      };
+        const canvas = canvasRef.current;
+        if (canvas) {
+            new window.rive.Rive({
+                src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`,
+                canvas,
+                autoplay: false,
+                layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
+            });
+        } else {
+            console.error('Canvas element not found');
+        }
     }, []);
 
     return (
@@ -75,14 +74,14 @@ const Listaexperimentos = () => {
             </div>
 
             <canvas 
-        ref={canvasRef} 
-        id="canvas" 
-        className="galileo-canvas" 
-        width="1920" 
-        height="1080"
-        style={{ width: '90%', height: 'auto' }}
-      ></canvas>        
-      </div>
+                ref={canvasRef} 
+                id="canvas" 
+                className="galileo-canvas" 
+                width="1920" 
+                height="1080"
+                style={{ width: '90%', height: 'auto' }}
+            ></canvas>        
+        </div>
     );
 };
 

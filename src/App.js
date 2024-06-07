@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { AuthProvider, useAuth } from './screens/AuthContext';  // Ajusta la ruta si es necesario
 import Listaexperimentos from './components/Listaexperimentos';
 import Login from './components/Login';
 import Paginaprincipal from './components/Paginaprincipal';
@@ -20,7 +21,6 @@ import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
 import UserDashboard from './components/UserDashboard';
 import AdminPanel from './screens/adminpanel';
-import { AuthProvider, useAuth } from './screens/AuthContext';
 import CentroDashboard from './components/Actudocentes';
 import CrearDocente from './components/Creardocente';
 import AdminDocentes from './screens/AdminDocentes';
@@ -43,13 +43,9 @@ function App() {
     return () => unsubscribe();
   }, [setUser]);
 
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/Paginaprincipal" />} />
+      <Route path="/" element={user ? <Navigate to="/Paginaprincipal" /> : <Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/Paginaprincipal" element={<Paginaprincipal userId={user?.uid} />} />
       <Route path="/Primaria" element={<Primaria />} />
@@ -85,10 +81,4 @@ function App() {
   );
 }
 
-export default function Root() {
-  return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  );
-}
+export default App;

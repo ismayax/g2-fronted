@@ -14,6 +14,7 @@ const CrearDocente = () => {
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getFirestore();
+  const centroId = "3adfUcs5KnxpgMK29TU9"; // Ajusta esto según sea necesario
 
   const handleCreateDocente = async (event) => {
     event.preventDefault();
@@ -33,11 +34,11 @@ const CrearDocente = () => {
         email,
         nivel,
         activo: false, // Por defecto, el docente no está activo
-        centro_id: "idDelCentroActual" // Ajusta esto según sea necesario
+        centro_id: centroId // Ajusta esto según sea necesario
       });
 
       // Actualizar la colección de 'centros_educativos' con el nuevo docente ID
-      const centroEducativoRef = doc(db, 'centros_educativos', 'idDelCentroActual');
+      const centroEducativoRef = doc(db, 'centros_educativos', centroId);
       await updateDoc(centroEducativoRef, {
         docente_id: arrayUnion(user.uid)
       });

@@ -18,7 +18,7 @@ const Login = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
-      
+
       const userId = userCredential.user.uid;
 
       // Verificar en la colección admincentro
@@ -31,7 +31,7 @@ const Login = () => {
         localStorage.setItem('userRole', 'admin');
         localStorage.setItem('centroId', adminCentroData.centro_id[0]);
         navigate('/admin-panel');
-        return;
+        return; // Agrega un return aquí para detener la ejecución si se encuentra el rol
       } else {
         console.log(`No data found in admincentro for UID: ${userId}`);
       }
@@ -46,22 +46,23 @@ const Login = () => {
         localStorage.setItem('userRole', 'docente');
         localStorage.setItem('centroId', docenteData.centro_id);
         navigate('/Paginaprincipal');
-        return;
+        return; // Agrega un return aquí para detener la ejecución si se encuentra el rol
       } else {
         console.log(`No data found in docentes for UID: ${userId}`);
       }
 
-      // Verificar si el usuario es un administrador
-      const userRef = doc(db, 'users', userId);
-      const userSnap = await getDoc(userRef);
+      // Verificar si el usuario es un superusuario
+      const superUserRef = doc(db, 'superusuario', userId);
+      const superUserSnap = await getDoc(superUserRef);
 
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        if (userData.role === 'admin') {
-          localStorage.setItem('userRole', 'admin');
-          navigate('/admin-panel');
-          return;
-        }
+      if (superUserSnap.exists()) {
+        const superUserData = superUserSnap.data();
+        console.log('SuperUser data:', superUserData);
+        localStorage.setItem('userRole', 'super');
+        navigate('/super-panel');
+        return; // Agrega un return aquí para detener la ejecución si se encuentra el rol
+      } else {
+        console.log(`No data found in superusuario for UID: ${userId}`);
       }
 
       throw new Error('User data not found. Please contact the administrator.');

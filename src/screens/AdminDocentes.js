@@ -1,28 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import { useAuth } from './AuthContext'; // Asumiendo que tienes un contexto de autenticación configurado
 import styles from '../assets/css/AdminDocentes.module.css';
 
 const AdminDocentes = () => {
   const [docentes, setDocentes] = useState([]);
+  const [limiteDocentes, setLimiteDocentes] = useState(0);
   const db = getFirestore();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchDocentes = async () => {
-      const q = query(collection(db, 'docentes'), where('centro_id', '==', 'idDelCentroActual')); // Ajusta el centro_id según sea necesario
-      const querySnapshot = await getDocs(q);
-      const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setDocentes(docentesList);
+    const fetchAdminCentro = async () => {
+      if (user) {
+        const adminCentroRef = doc(db, 'admincentro', user.uid);
+        const adminCentroSnap = await getDoc(adminCentroRef);
+
+        if (adminCentroSnap.exists()) {
+          const adminCentroData = adminCentroSnap.data();
+          const centroId = adminCentroData.centro_id[0]; // Asumiendo que siempre hay al menos un centro_id
+
+          // Obtener el plan de suscripción del centro educativo
+          const centroRef = doc(db, 'centros_educativos', centroId);
+          const centroSnap = await getDoc(centroRef);
+
+          if (centroSnap.exists()) {
+            const centroData = centroSnap.data();
+            const suscripcionRef = doc(db, 'suscripciones', centroData.suscripcion);
+            const suscripcionSnap = await getDoc(suscripcionRef);
+
+            if (suscripcionSnap.exists()) {
+              const suscripcionData = suscripcionSnap.data();
+              setLimiteDocentes(suscripcionData.num_docentes);
+            }
+          }
+
+          // Obtener los docentes asociados a este centro_id
+          const q = query(collection(db, 'docentes'), where('centro_id', 'array-contains', centroId));
+          const querySnapshot = await getDocs(q);
+          const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setDocentes(docentesList);
+        }
+      }
     };
-    fetchDocentes();
-  }, [db]);
+
+    fetchAdminCentro();
+  }, [db, user]);
 
   const handleActivateDocente = async (docenteId, isActive) => {
     if (isActive) {
       const activeDocentes = docentes.filter(docente => docente.activo).length;
-      const maxActiveDocentes = 3; // Reemplaza esto con el valor correcto desde la base de datos
-      if (activeDocentes >= maxActiveDocentes) {
-        alert('No puedes activar más docentes. Límite alcanzado según el plan de suscripción.');
+      if (activeDocentes >= limiteDocentes) {
+        alert(`No puedes activar más docentes. Límite de ${limiteDocentes} alcanzado según el plan de suscripción.`);
         return;
       }
     }
@@ -40,6 +69,7 @@ const AdminDocentes = () => {
         {docentes.map(docente => (
           <div key={docente.id} className={styles.docenteItem}>
             <div className={styles.docenteInfo}>
+              <p><strong>Nombre:</strong> {docente.nombre}</p>
               <p><strong>Email:</strong> {docente.email}</p>
               <p><strong>Nivel:</strong> {docente.nivel}</p>
               <p><strong>Activo:</strong> {docente.activo ? 'Sí' : 'No'}</p>
