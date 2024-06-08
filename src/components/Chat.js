@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, addDoc, deleteDoc, where, doc, setDoc } from 'firebase/firestore'; // Asegúrate de importar todas las funciones necesarias
+import { collection, query, orderBy, getDocs, addDoc, deleteDoc, where, doc, setDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import '../assets/css/Chat.css';
 
