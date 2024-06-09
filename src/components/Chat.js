@@ -14,9 +14,11 @@ const Chat = ({ userId, closeChat }) => {
   useEffect(() => {
     const fetchDocentes = async () => {
       try {
+        console.log("Fetching docentes...");
         const docentesCollection = collection(db, 'docentes');
         const docentesSnapshot = await getDocs(docentesCollection);
         const docentesList = docentesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log("Docentes fetched:", docentesList);
         setDocentes(docentesList);
       } catch (error) {
         console.error("Error fetching docentes:", error);
@@ -30,19 +32,24 @@ const Chat = ({ userId, closeChat }) => {
   useEffect(() => {
     const cleanOldMessages = async () => {
       const fifteenDaysAgo = Date.now() - 15 * 24 * 60 * 60 * 1000;
-      const messagesRef = collection(db, `messages`);
-      const chatsSnapshot = await getDocs(messagesRef);
+      try {
+        const messagesRef = collection(db, `messages`);
+        const chatsSnapshot = await getDocs(messagesRef);
 
-      chatsSnapshot.forEach(async (chatDoc) => {
-        const chatId = chatDoc.id;
-        const chatMessagesRef = collection(db, `messages/${chatId}/chat`);
-        const q = query(chatMessagesRef, where('timestamp', '<', fifteenDaysAgo));
-        const oldMessagesSnapshot = await getDocs(q);
+        chatsSnapshot.forEach(async (chatDoc) => {
+          const chatId = chatDoc.id;
+          const chatMessagesRef = collection(db, `messages/${chatId}/chat`);
+          const q = query(chatMessagesRef, where('timestamp', '<', fifteenDaysAgo));
+          const oldMessagesSnapshot = await getDocs(q);
 
-        oldMessagesSnapshot.forEach(async (messageDoc) => {
-          await deleteDoc(messageDoc.ref);
+          oldMessagesSnapshot.forEach(async (messageDoc) => {
+            await deleteDoc(messageDoc.ref);
+          });
         });
-      });
+        console.log("Old messages cleaned");
+      } catch (error) {
+        console.error("Error cleaning old messages:", error);
+      }
     };
 
     // Run cleanup every time component mounts
@@ -58,12 +65,14 @@ const Chat = ({ userId, closeChat }) => {
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && activeChat) {
       try {
+        console.log("Sending message...");
         const messagesRef = collection(db, `messages/${activeChat}/chat`);
         await addDoc(messagesRef, {
           text: newMessage,
           userId: userId,
           timestamp: Date.now()
         });
+        console.log("Message sent");
         setNewMessage('');
         loadMessages(activeChat);
       } catch (error) {
@@ -78,12 +87,13 @@ const Chat = ({ userId, closeChat }) => {
     setActiveUser(selectedUserId);
 
     try {
+      console.log("Creating chat document...");
       // Crear el documento de chat si no existe
       const chatDocRef = doc(db, 'messages', chatId);
       await setDoc(chatDocRef, {
         participants: [userId, selectedUserId]
       }, { merge: true });
-
+      console.log("Chat document created");
       loadMessages(chatId);
     } catch (error) {
       console.error("Error creating chat document:", error);
@@ -92,10 +102,12 @@ const Chat = ({ userId, closeChat }) => {
 
   const loadMessages = async (chatId) => {
     try {
+      console.log("Loading messages...");
       const messagesRef = collection(db, `messages/${chatId}/chat`);
       const q = query(messagesRef, orderBy('timestamp'));
       const messageSnapshot = await getDocs(q);
       const messagesArray = messageSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log("Messages loaded:", messagesArray);
       setMessages(messagesArray);
     } catch (error) {
       console.error("Error loading messages:", error);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
-import styles from '../assets/css/CrearDocente.module.css';
+import styles from '../assets/css/Crearsupdo.module.css'; // Asegúrate de que la importación sea correcta
 
 const Crearsupdo = () => {
   const [email, setEmail] = useState("");
@@ -68,7 +68,8 @@ const Crearsupdo = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.dashboard}>
+      <div className={styles.container}>
       <h2>Crear Nuevo Docente</h2>
       <form onSubmit={handleCreateDocente} className={styles.form}>
         <div className={styles.formGroup}>
@@ -142,6 +143,7 @@ const Crearsupdo = () => {
         {error && <p className={styles.error}>{error}</p>}
         <button type="submit" className={styles.btnCreate}>Crear Docente</button>
       </form>
+      </div>
     </div>
   );
 };

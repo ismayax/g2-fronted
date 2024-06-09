@@ -24,6 +24,7 @@ import AdminPanel from './screens/adminpanel';
 import CentroDashboard from './components/Actudocentes';
 import CrearDocente from './components/Creardocente';
 import Crearsupdo from './components/crearsupdo'; // Añade esta línea
+import CrearAdmincentro from './components/CrearAdmincentro'; // Añade esta línea
 import AdminDocentes from './screens/AdminDocentes';
 import PrivateRoute from './screens/Rutas'; // Ajustar la importación del componente PrivateRoute
 
@@ -67,11 +68,13 @@ function App() {
       <Route path="/Terminos" element={<Terminos />} />
       <Route path="/Contactenos" element={<Contactenos />} />
       <Route path="/crearsupdo" element={<Crearsupdo />} /> {/* Añade esta línea */}
+      <Route path="/crear-admincentro" element={<CrearAdmincentro />} /> {/* Añade esta línea */}
 
       {/* Private Routes */}
       <Route element={<PrivateRoute role="super" />}>
         <Route path="/superuser-dashboard" element={<SuperuserDashboard />} />
         <Route path="/crearsupdo" element={<Crearsupdo />} /> {/* Añade esta línea */}
+        <Route path="/crear-admincentro" element={<CrearAdmincentro />} /> {/* Añade esta línea */}
       </Route>
 
       <Route element={<PrivateRoute role="admin" />}>
