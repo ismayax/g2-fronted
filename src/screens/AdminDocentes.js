@@ -12,35 +12,69 @@ const AdminDocentes = () => {
 
   useEffect(() => {
     const fetchAdminCentro = async () => {
-      if (user) {
+      if (!user) {
+        console.log('User is not authenticated.');
+        return;
+      }
+
+      try {
+        console.log(`Fetching admin centro for user: ${user.uid}`);
         const adminCentroRef = doc(db, 'admincentro', user.uid);
         const adminCentroSnap = await getDoc(adminCentroRef);
 
-        if (adminCentroSnap.exists()) {
-          const adminCentroData = adminCentroSnap.data();
-          const centroId = adminCentroData.centro_id[0]; // Asumiendo que siempre hay al menos un centro_id
-
-          // Obtener el plan de suscripción del centro educativo
-          const centroRef = doc(db, 'centros_educativos', centroId);
-          const centroSnap = await getDoc(centroRef);
-
-          if (centroSnap.exists()) {
-            const centroData = centroSnap.data();
-            const suscripcionRef = doc(db, 'suscripciones', centroData.suscripcion);
-            const suscripcionSnap = await getDoc(suscripcionRef);
-
-            if (suscripcionSnap.exists()) {
-              const suscripcionData = suscripcionSnap.data();
-              setLimiteDocentes(suscripcionData.num_docentes);
-            }
-          }
-
-          // Obtener los docentes asociados a este centro_id
-          const q = query(collection(db, 'docentes'), where('centro_id', 'array-contains', centroId));
-          const querySnapshot = await getDocs(q);
-          const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          setDocentes(docentesList);
+        if (!adminCentroSnap.exists()) {
+          console.log('No admincentro data found for user:', user.uid);
+          return;
         }
+
+        const adminCentroData = adminCentroSnap.data();
+        console.log('adminCentroData:', adminCentroData);
+        if (!adminCentroData.centro_id || adminCentroData.centro_id.length === 0) {
+          console.log('No centro_id found in admincentro data.');
+          return;
+        }
+
+        const centroId = adminCentroData.centro_id[0];
+        console.log(`Fetching centro_educativo for centroId: ${centroId}`);
+        // Obtener el plan de suscripción del centro educativo
+        const centroRef = doc(db, 'centros_educativos', centroId);
+        const centroSnap = await getDoc(centroRef);
+
+        if (!centroSnap.exists()) {
+          console.log('No centro_educativo data found for centroId:', centroId);
+          return;
+        }
+
+        const centroData = centroSnap.data();
+        console.log('centroData:', centroData);
+        if (!centroData.suscripcion_id || centroData.suscripcion_id.length === 0) {
+          console.log('No suscripcion_id found in centro_educativo data.');
+          return;
+        }
+
+        const suscripcionId = centroData.suscripcion_id[0];
+        console.log(`Fetching suscripcion for suscripcionId: ${suscripcionId}`);
+        const suscripcionRef = doc(db, 'suscripciones', suscripcionId);
+        const suscripcionSnap = await getDoc(suscripcionRef);
+
+        if (!suscripcionSnap.exists()) {
+          console.log('No suscripcion data found for suscripcion:', suscripcionId);
+          return;
+        }
+
+        const suscripcionData = suscripcionSnap.data();
+        console.log('suscripcionData:', suscripcionData);
+        setLimiteDocentes(suscripcionData.num_docentes);
+
+        // Obtener los docentes asociados a este centro_id
+        console.log(`Fetching docentes for centroId: ${centroId}`);
+        const q = query(collection(db, 'docentes'), where('centro_id', 'array-contains', centroId));
+        const querySnapshot = await getDocs(q);
+        const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('docentesList:', docentesList);
+        setDocentes(docentesList);
+      } catch (error) {
+        console.error('Error fetching admin centro:', error);
       }
     };
 
@@ -56,9 +90,13 @@ const AdminDocentes = () => {
       }
     }
 
-    const docenteRef = doc(db, 'docentes', docenteId);
-    await updateDoc(docenteRef, { activo: isActive });
-    setDocentes(docentes.map(doc => (doc.id === docenteId ? { ...doc, activo: isActive } : doc)));
+    try {
+      const docenteRef = doc(db, 'docentes', docenteId);
+      await updateDoc(docenteRef, { activo: isActive });
+      setDocentes(docentes.map(doc => (doc.id === docenteId ? { ...doc, activo: isActive } : doc)));
+    } catch (error) {
+      console.error('Error updating docente:', error);
+    }
   };
 
   return (

@@ -13,10 +13,14 @@ const Chat = ({ userId, closeChat }) => {
 
   useEffect(() => {
     const fetchDocentes = async () => {
-      const docentesCollection = collection(db, 'docentes');
-      const docentesSnapshot = await getDocs(docentesCollection);
-      const docentesList = docentesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setDocentes(docentesList);
+      try {
+        const docentesCollection = collection(db, 'docentes');
+        const docentesSnapshot = await getDocs(docentesCollection);
+        const docentesList = docentesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setDocentes(docentesList);
+      } catch (error) {
+        console.error("Error fetching docentes:", error);
+      }
     };
 
     fetchDocentes();
@@ -53,14 +57,18 @@ const Chat = ({ userId, closeChat }) => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && activeChat) {
-      const messagesRef = collection(db, `messages/${activeChat}/chat`);
-      await addDoc(messagesRef, {
-        text: newMessage,
-        userId: userId,
-        timestamp: Date.now()
-      });
-      setNewMessage('');
-      loadMessages(activeChat);
+      try {
+        const messagesRef = collection(db, `messages/${activeChat}/chat`);
+        await addDoc(messagesRef, {
+          text: newMessage,
+          userId: userId,
+          timestamp: Date.now()
+        });
+        setNewMessage('');
+        loadMessages(activeChat);
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
@@ -69,21 +77,29 @@ const Chat = ({ userId, closeChat }) => {
     setActiveChat(chatId);
     setActiveUser(selectedUserId);
 
-    // Crear el documento de chat si no existe
-    const chatDocRef = doc(db, 'messages', chatId);
-    await setDoc(chatDocRef, {
-      participants: [userId, selectedUserId]
-    }, { merge: true });
+    try {
+      // Crear el documento de chat si no existe
+      const chatDocRef = doc(db, 'messages', chatId);
+      await setDoc(chatDocRef, {
+        participants: [userId, selectedUserId]
+      }, { merge: true });
 
-    loadMessages(chatId);
+      loadMessages(chatId);
+    } catch (error) {
+      console.error("Error creating chat document:", error);
+    }
   };
 
   const loadMessages = async (chatId) => {
-    const messagesRef = collection(db, `messages/${chatId}/chat`);
-    const q = query(messagesRef, orderBy('timestamp'));
-    const messageSnapshot = await getDocs(q);
-    const messagesArray = messageSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    setMessages(messagesArray);
+    try {
+      const messagesRef = collection(db, `messages/${chatId}/chat`);
+      const q = query(messagesRef, orderBy('timestamp'));
+      const messageSnapshot = await getDocs(q);
+      const messagesArray = messageSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(messagesArray);
+    } catch (error) {
+      console.error("Error loading messages:", error);
+    }
   };
 
   const handleCloseChat = () => {

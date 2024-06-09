@@ -1,20 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import styles from '../assets/css/CrearDocente.module.css';
 
-const CrearDocente = () => {
+const Crearsupdo = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [username, setUsername] = useState("");
   const [nivel, setNivel] = useState("");
+  const [centros, setCentros] = useState([]);
+  const [selectedCentro, setSelectedCentro] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getFirestore();
-  const centroId = "3adfUcs5KnxpgMK29TU9"; // Ajusta esto según sea necesario
+
+  useEffect(() => {
+    const fetchCentros = async () => {
+      const centrosSnapshot = await getDocs(collection(db, 'centros_educativos'));
+      const centrosList = centrosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setCentros(centrosList);
+    };
+    fetchCentros();
+  }, []);
 
   const handleCreateDocente = async (event) => {
     event.preventDefault();
@@ -37,20 +47,20 @@ const CrearDocente = () => {
         email,
         nivel,
         activo: false, // Por defecto, el docente no está activo
-        centro_id: [centroId] // Ajusta esto según sea necesario
+        centro_id: [selectedCentro] // Centro seleccionado
       });
       console.log("User data saved to Firestore");
 
       // Actualizar la colección de 'centros_educativos' con el nuevo docente ID
       console.log("Updating centro_educativo with new docente ID...");
-      const centroEducativoRef = doc(db, 'centros_educativos', centroId);
+      const centroEducativoRef = doc(db, 'centros_educativos', selectedCentro);
       await updateDoc(centroEducativoRef, {
         docente_id: arrayUnion(user.uid)
       });
       console.log("Centro_educativo updated");
 
       // Redirigir a la página de lista de docentes o dashboard
-      navigate('/admin-docentes');
+      navigate('/superuser-dashboard');
     } catch (error) {
       console.error("Error creating docente:", error);
       setError(error.message);
@@ -82,7 +92,7 @@ const CrearDocente = () => {
           />
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="nivel">Etapa y Ciclo Adjunto</label>
+          <label htmlFor="nivel">Nivel</label>
           <select
             id="nivel"
             value={nivel}
@@ -93,6 +103,20 @@ const CrearDocente = () => {
             <option value="infantil">Infantil</option>
             <option value="primaria">Primaria</option>
             <option value="secundaria">Secundaria</option>
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="centro">Centro Educativo</label>
+          <select
+            id="centro"
+            value={selectedCentro}
+            onChange={(e) => setSelectedCentro(e.target.value)}
+            required
+          >
+            <option value="">Seleccionar Centro</option>
+            {centros.map(centro => (
+              <option key={centro.id} value={centro.id}>{centro.nombre}</option>
+            ))}
           </select>
         </div>
         <div className={styles.formGroup}>
@@ -122,4 +146,4 @@ const CrearDocente = () => {
   );
 };
 
-export default CrearDocente;
+export default Crearsupdo;

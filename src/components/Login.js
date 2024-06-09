@@ -21,6 +21,20 @@ const Login = () => {
 
       const userId = userCredential.user.uid;
 
+      // Verificar en la colección superusuario
+      const superUserRef = doc(db, 'superusuario', userId);
+      const superUserSnap = await getDoc(superUserRef);
+
+      if (superUserSnap.exists()) {
+        const superUserData = superUserSnap.data();
+        console.log('SuperUser data:', superUserData);
+        localStorage.setItem('userRole', 'super');
+        navigate('/superuser-dashboard');
+        return; // Agrega un return aquí para detener la ejecución si se encuentra el rol
+      } else {
+        console.log(`No data found in superusuario for UID: ${userId}`);
+      }
+
       // Verificar en la colección admincentro
       const adminCentroRef = doc(db, 'admincentro', userId);
       const adminCentroSnap = await getDoc(adminCentroRef);
@@ -49,20 +63,6 @@ const Login = () => {
         return; // Agrega un return aquí para detener la ejecución si se encuentra el rol
       } else {
         console.log(`No data found in docentes for UID: ${userId}`);
-      }
-
-      // Verificar si el usuario es un superusuario
-      const superUserRef = doc(db, 'superusuario', userId);
-      const superUserSnap = await getDoc(superUserRef);
-
-      if (superUserSnap.exists()) {
-        const superUserData = superUserSnap.data();
-        console.log('SuperUser data:', superUserData);
-        localStorage.setItem('userRole', 'super');
-        navigate('/super-panel');
-        return; // Agrega un return aquí para detener la ejecución si se encuentra el rol
-      } else {
-        console.log(`No data found in superusuario for UID: ${userId}`);
       }
 
       throw new Error('User data not found. Please contact the administrator.');
