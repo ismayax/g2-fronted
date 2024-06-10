@@ -10,7 +10,8 @@ const SuperuserDashboard = () => {
   const [admins, setAdmins] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
-  const [nivel, setNivel] = useState('');
+  const [niveles, setNiveles] = useState([]);
+  const [selectedNiveles, setSelectedNiveles] = useState([]);
   const [subscription, setSubscription] = useState('');
   const [showDetails, setShowDetails] = useState({});
   const [showAdminDetails, setShowAdminDetails] = useState({});
@@ -27,6 +28,13 @@ const SuperuserDashboard = () => {
       setAdmins(adminsList);
     };
     fetchUsers();
+    
+    const fetchNiveles = async () => {
+      const nivelesSnapshot = await getDocs(collection(db, 'actividades'));
+      const nivelesList = nivelesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setNiveles(nivelesList);
+    };
+    fetchNiveles();
   }, []);
 
   const handleUpdateUser = async (e) => {
@@ -34,10 +42,10 @@ const SuperuserDashboard = () => {
     if (selectedUser) {
       try {
         const userRef = doc(db, 'docentes', selectedUser.id);
-        await updateDoc(userRef, { nivel });
-        setDocentes(docentes.map(user => (user.id === selectedUser.id ? { ...user, nivel } : user)));
+        await updateDoc(userRef, { niveles: selectedNiveles });
+        setDocentes(docentes.map(user => (user.id === selectedUser.id ? { ...user, niveles: selectedNiveles } : user)));
         setSelectedUser(null);
-        setNivel('');
+        setSelectedNiveles([]);
         setShowDetails({ ...showDetails, [selectedUser.id]: false });
       } catch (error) {
         console.error('Error updating user:', error);
@@ -82,11 +90,25 @@ const SuperuserDashboard = () => {
   };
 
   const toggleDetails = (userId) => {
+    const user = docentes.find(user => user.id === userId);
     setShowDetails(prevState => ({ ...prevState, [userId]: !prevState[userId] }));
+    setSelectedUser(user);
+    setSelectedNiveles(user ? user.niveles : []);
   };
 
   const toggleAdminDetails = (adminId) => {
+    const admin = admins.find(admin => admin.id === adminId);
     setShowAdminDetails(prevState => ({ ...prevState, [adminId]: !prevState[adminId] }));
+    setSelectedAdmin(admin);
+    setSubscription(admin ? admin.suscripcion_id : '');
+  };
+
+  const handleNivelChange = (nivelId) => {
+    if (selectedNiveles.includes(nivelId)) {
+      setSelectedNiveles(selectedNiveles.filter(id => id !== nivelId));
+    } else {
+      setSelectedNiveles([...selectedNiveles, nivelId]);
+    }
   };
 
   return (
@@ -106,15 +128,23 @@ const SuperuserDashboard = () => {
                 {showDetails[user.id] && (
                   <div className={styles.userDetails}>
                     <p>Nombre: {user.nombre}</p>
-                    <p>Nivel: {user.nivel}</p>
-                    <p>Centro: {user.centro_id.join(', ')}</p>
+                    <p>Niveles:</p>
+                    <ul>
+                      {niveles.map(nivel => (
+                        <li key={nivel.id}>
+                          <label>
+                            <input
+                              type="checkbox"
+                              value={nivel.id}
+                              checked={selectedNiveles.includes(nivel.id)}
+                              onChange={() => handleNivelChange(nivel.id)}
+                            />
+                            {nivel.nombre}
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
                     <form onSubmit={handleUpdateUser} className={styles.form}>
-                      <select value={nivel} onChange={(e) => setNivel(e.target.value)} required className={styles.select}>
-                        <option value="" disabled>Seleccione un nivel</option>
-                        <option value="infantil">Infantil</option>
-                        <option value="primaria">Primaria</option>
-                        <option value="secundaria">Secundaria</option>
-                      </select>
                       <button type="submit" className={styles.button}>Confirmar Cambio</button>
                     </form>
                     <button onClick={() => handleDeleteUser(user.id)} className={styles.deleteButton}>Eliminar</button>
