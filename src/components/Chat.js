@@ -1,33 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, addDoc, deleteDoc, where, doc, setDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, addDoc, deleteDoc, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 import '../assets/css/Chat.css';
 
 const Chat = ({ userId, closeChat }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [docentes, setDocentes] = useState([]);
+  const [participants, setParticipants] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [activeUser, setActiveUser] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Define colors for different roles
+  const roleColors = {
+    superusuario: '#FF0000', // Red
+    admincentro: '#FFA500',  // Orange
+    docente: '#0000FF'       // Blue
+  };
+
   useEffect(() => {
-    const fetchDocentes = async () => {
+    const fetchParticipants = async () => {
       try {
-        console.log("Fetching docentes...");
-        const docentesCollection = collection(db, 'docentes');
-        const docentesSnapshot = await getDocs(docentesCollection);
-        const docentesList = docentesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log("Docentes fetched:", docentesList);
-        setDocentes(docentesList);
+        const roles = ['superusuario', 'admincentro', 'docentes'];
+        let participantsList = [];
+
+        for (const role of roles) {
+          const participantsCollection = collection(db, role);
+          const participantsSnapshot = await getDocs(participantsCollection);
+          participantsList = [
+            ...participantsList,
+            ...participantsSnapshot.docs
+              .map(doc => ({ id: doc.id, ...doc.data(), role }))
+              .filter(doc => doc.id !== userId)
+          ];
+        }
+
+        setParticipants(participantsList);
       } catch (error) {
-        console.error("Error fetching docentes:", error);
+        console.error("Error fetching participants:", error);
       }
     };
 
-    fetchDocentes();
-    setIsOpen(true); // Open the chat with animation
-  }, []);
+    fetchParticipants();
+    setIsOpen(true);
+  }, [userId]);
 
   useEffect(() => {
     const cleanOldMessages = async () => {
@@ -39,40 +55,34 @@ const Chat = ({ userId, closeChat }) => {
         chatsSnapshot.forEach(async (chatDoc) => {
           const chatId = chatDoc.id;
           const chatMessagesRef = collection(db, `messages/${chatId}/chat`);
-          const q = query(chatMessagesRef, where('timestamp', '<', fifteenDaysAgo));
+          const q = query(chatMessagesRef, orderBy('timestamp'));
           const oldMessagesSnapshot = await getDocs(q);
 
           oldMessagesSnapshot.forEach(async (messageDoc) => {
-            await deleteDoc(messageDoc.ref);
+            if (messageDoc.data().timestamp < fifteenDaysAgo) {
+              await deleteDoc(messageDoc.ref);
+            }
           });
         });
-        console.log("Old messages cleaned");
       } catch (error) {
         console.error("Error cleaning old messages:", error);
       }
     };
 
-    // Run cleanup every time component mounts
     cleanOldMessages();
-
-    // Set interval to run cleanup every 24 hours
     const intervalId = setInterval(cleanOldMessages, 24 * 60 * 60 * 1000);
-
-    // Cleanup interval on unmount
     return () => clearInterval(intervalId);
   }, []);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() !== '' && activeChat) {
       try {
-        console.log("Sending message...");
         const messagesRef = collection(db, `messages/${activeChat}/chat`);
         await addDoc(messagesRef, {
           text: newMessage,
           userId: userId,
           timestamp: Date.now()
         });
-        console.log("Message sent");
         setNewMessage('');
         loadMessages(activeChat);
       } catch (error) {
@@ -87,27 +97,27 @@ const Chat = ({ userId, closeChat }) => {
     setActiveUser(selectedUserId);
 
     try {
-      console.log("Creating chat document...");
-      // Crear el documento de chat si no existe
       const chatDocRef = doc(db, 'messages', chatId);
-      await setDoc(chatDocRef, {
-        participants: [userId, selectedUserId]
-      }, { merge: true });
-      console.log("Chat document created");
+      const chatDoc = await getDoc(chatDocRef);
+      
+      if (!chatDoc.exists()) {
+        await setDoc(chatDocRef, {
+          participants: [userId, selectedUserId]
+        });
+      }
+
       loadMessages(chatId);
     } catch (error) {
-      console.error("Error creating chat document:", error);
+      console.error("Error creating or fetching chat document:", error);
     }
   };
 
   const loadMessages = async (chatId) => {
     try {
-      console.log("Loading messages...");
       const messagesRef = collection(db, `messages/${chatId}/chat`);
       const q = query(messagesRef, orderBy('timestamp'));
       const messageSnapshot = await getDocs(q);
       const messagesArray = messageSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log("Messages loaded:", messagesArray);
       setMessages(messagesArray);
     } catch (error) {
       console.error("Error loading messages:", error);
@@ -116,7 +126,7 @@ const Chat = ({ userId, closeChat }) => {
 
   const handleCloseChat = () => {
     setIsOpen(false);
-    setTimeout(closeChat, 300); // Wait for the animation to finish before closing the chat
+    setTimeout(closeChat, 300);
   };
 
   const formatDate = (timestamp) => {
@@ -143,10 +153,13 @@ const Chat = ({ userId, closeChat }) => {
       </div>
       <div className="chat-body">
         <div className="sidebar">
-          {docentes.length > 0 ? (
-            docentes.map((docente) => (
-              <div key={docente.id} className="user-list" onClick={() => handleSelectUser(docente.id)}>
-                <strong>{docente.email}</strong>
+          {participants.length > 0 ? (
+            participants.map((participant) => (
+              <div key={participant.id} className="user-list" onClick={() => handleSelectUser(participant.id)}>
+                <strong>
+                  {participant.email}
+                  <span className="role-indicator" style={{ borderLeft: `5px solid ${roleColors[participant.role]}` }}></span>
+                </strong>
               </div>
             ))
           ) : (
