@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import BurguerButton from "./menudesple";
 import fondoImage from "../assets/img/laboratorio.jpg";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 import Chat from "./Chat";
-import { Rive, Layout, Fit, Alignment } from '@rive-app/canvas';
 
 const Paginaprincipal = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,16 +27,19 @@ const Paginaprincipal = ({ userId }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      new Rive({
-        src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`, // Ruta al archivo .riv en la carpeta public
-        canvas,
-        autoplay: false,
-        layout: new Layout({ fit: Fit.Cover, alignment: Alignment.Center }),
-      });
-    } else {
-      console.error('Canvas element not found');
-    }
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({
+        fit: 'cover',
+        alignment: 'center'
+      }),
+    });
+
+    return () => {
+      rive.stop();
+    };
   }, []);
 
   return (

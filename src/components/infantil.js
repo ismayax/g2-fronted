@@ -3,31 +3,27 @@ import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioinfantil.jpg";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
+
 
 const Infantil = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      const script = document.createElement("script");
-      script.src = "https://unpkg.com/@rive-app/canvas";
-      script.async = true;
-      script.onload = () => {
-        new window.rive.Rive({
-          src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`,
-          canvas,
-          autoplay: true,
-          layout: new window.rive.Layout({
-            fit: window.rive.Fit.None,
-            alignment: window.rive.Alignment.Center,
-          }),
-        });
-      };
-      document.body.appendChild(script);
-    } else {
-      console.error('Canvas element not found');
-    }
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({
+        fit: 'cover',
+        alignment: 'center'
+      }),
+    });
+
+    return () => {
+      rive.stop();
+    };
   }, []);
 
   return (

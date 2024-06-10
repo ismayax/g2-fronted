@@ -226,9 +226,9 @@ html, body {
 .explicacion {
   background-color: #f0f5f000;
   border: 3px solid #79a981;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
-  margin-top: 5%;
+  margin-top: 1%;
   margin-bottom: 20px;
   color: #ffffff;
   font-size: 30px;
@@ -281,14 +281,16 @@ html, body {
 }
 
 
-.galileoAnimation {
-  position: absolute;
-  bottom: 5%;
-  right: 6%; /* Ajusta el valor para mover el elemento más a la derecha */
-  width: 20%;
+.galileoCanvas {
+  width: 90%;
   height: auto;
-  margin-right: 1%;
+  position: absolute;
+  top: 2%;
+  left: 37%;
+  transform: scaleX(-1); /* Voltea horizontalmente */
+  z-index: -1; /* Envía al fondo */
 }
+
 
 
 

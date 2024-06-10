@@ -3,6 +3,8 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import "../assets/css/Listaexperimentos.css";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
+
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
@@ -35,17 +37,20 @@ const Listaexperimentos = () => {
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        if (canvas) {
-            new window.rive.Rive({
-                src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`,
-                canvas,
-                autoplay: false,
-                layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
-            });
-        } else {
-            console.error('Canvas element not found');
-        }
-    }, []);
+        const rive = new window.rive.Rive({
+          src: galileoRive,
+          canvas,
+          autoplay: false,
+          layout: new window.rive.Layout({
+            fit: 'cover',
+            alignment: 'center'
+          }),
+        });
+    
+        return () => {
+          rive.stop();
+        };
+      }, []);
 
     return (
         <div className="pagina-experimentos-container" style={{ backgroundImage: `url(${fondoImage})` }}>
@@ -60,7 +65,7 @@ const Listaexperimentos = () => {
 
             <div className="spacer"></div> {/* Agrega un elemento de espaciado para compensar el espacio ocupado por la barra */}
             <div className="recuadro-container">
-                {actividades.length > 0 ? (
+                {actividades && actividades.length > 0 ? (
                     actividades.map((actividad) => (
                         <div key={actividad.id} className="recuadro" style={rectangleStyle}>
                             <Link to={`/experimento/${actividad.id}`} style={linkStyle}>
@@ -72,15 +77,14 @@ const Listaexperimentos = () => {
                     <p>No hay actividades disponibles.</p>
                 )}
             </div>
-
             <canvas 
-                ref={canvasRef} 
-                id="canvas" 
-                className="galileo-canvas" 
-                width="1920" 
-                height="1080"
-                style={{ width: '90%', height: 'auto' }}
-            ></canvas>        
+        ref={canvasRef} 
+        id="canvas" 
+        className="galileo-canvas" 
+        width="1920" 
+        height="1080"
+        style={{ width: '90%', height: 'auto' }}
+      ></canvas>      
         </div>
     );
 };

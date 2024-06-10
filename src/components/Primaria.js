@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioprimaria.jpg";
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
+
 
 
 const Primaria = () => {
@@ -11,16 +13,19 @@ const Primaria = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      new window.rive.Rive({
-        src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`, // Ruta al archivo .riv en la carpeta public
-        canvas,
-        autoplay: true,
-        layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
-      });
-    } else {
-      console.error('Canvas element not found');
-    }
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: false,
+      layout: new window.rive.Layout({
+        fit: 'cover',
+        alignment: 'center'
+      }),
+    });
+
+    return () => {
+      rive.stop();
+    };
   }, []);
 
   return (

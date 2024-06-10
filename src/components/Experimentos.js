@@ -7,16 +7,19 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css"; 
 import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa';
+import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 
 function Experimento() {
   const [experimento, setExperimento] = useState(null);
   const [showGalileo, setShowGalileo] = useState(true);
   const [pasoActual, setPasoActual] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { id } = useParams();
   const sliderRef = useRef(null);
   const navigate = useNavigate();
   const canvasRef = useRef(null);
+  const riveRef = useRef(null);
 
   useEffect(() => {
     const fetchExperimento = async () => {
@@ -44,6 +47,7 @@ function Experimento() {
       const voices = window.speechSynthesis.getVoices();
       speech.voice = voices.find(voice => voice.name === 'Google español');
       window.speechSynthesis.speak(speech);
+      setIsSpeaking(true);
     }
   };
 
@@ -53,15 +57,15 @@ function Experimento() {
       if (pasoActual === 0) {
         textoALeer = `${experimento.titulo}. ${experimento.descripcion_actividad}`;
       } else if (pasoActual === 1) {
-        textoALeer = `Materiales necesarios: ${experimento.materiales.join(', ')}`;
+        textoALeer = `Materiales necesarios: ${experimento.materiales?.join(', ')}`;
       } else if (pasoActual === 2) {
-        textoALeer = `Preguntas Hipotéticas Iniciales: ${experimento.preguntas_iniciales_hipotesis.join(', ')}`;
-      } else if (pasoActual >= 3 && pasoActual < 3 + experimento.Pasos.length) {
+        textoALeer = `Preguntas Hipotéticas Iniciales: ${experimento.preguntas_iniciales_hipotesis?.join(', ')}`;
+      } else if (pasoActual >= 3 && pasoActual < 3 + experimento.Pasos?.length) {
         const indexPaso = pasoActual - 3;
-        textoALeer = `Paso ${indexPaso + 1}: ${experimento.Pasos[indexPaso]}`;
-      } else if (pasoActual === 3 + experimento.Pasos.length) {
-        textoALeer = `Preguntas Finales para Conclusión: ${experimento.preguntas_finales_conclusion.join(', ')}`;
-      } else if (pasoActual === 4 + experimento.Pasos.length) {
+        textoALeer = `${experimento.Pasos[indexPaso]}`;
+      } else if (pasoActual === 3 + experimento.Pasos?.length) {
+        textoALeer = `Preguntas Finales para Conclusión: ${experimento.preguntas_finales_conclusion?.join(', ')}`;
+      } else if (pasoActual === 4 + experimento.Pasos?.length) {
         textoALeer = `Explicación: ${experimento.explicacion}`;
       }
       leerTexto(textoALeer);
@@ -71,19 +75,28 @@ function Experimento() {
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     };
   }, []);
 
   useEffect(() => {
-    if (canvasRef.current) {
-      new window.rive.Rive({
-        src: `${process.env.PUBLIC_URL}/galileo_1_sin_fondo.riv`,
-        canvas: canvasRef.current,
-        autoplay: true,
-        layout: new window.rive.Layout({ fit: 'cover', alignment: 'center' }),
-      });
-    }
-  }, [canvasRef]);
+    const canvas = canvasRef.current;
+    const rive = new window.rive.Rive({
+      src: galileoRive,
+      canvas,
+      autoplay: isSpeaking,
+      layout: new window.rive.Layout({
+        fit: 'cover',
+        alignment: 'center'
+      }),
+    });
+
+    riveRef.current = rive;
+
+    return () => {
+      rive.stop();
+    };
+  }, [isSpeaking]);
 
   const handleSlideChange = (oldIndex, newIndex) => {
     window.speechSynthesis.cancel();
@@ -93,6 +106,7 @@ function Experimento() {
 
   const handleAfterSlideChange = () => {
     setShowGalileo(true);
+    setIsSpeaking(false);
   };
 
   const toggleMute = () => {
@@ -115,7 +129,7 @@ function Experimento() {
       <div key="materiales">
         <h2 className={styles.materialsHeader}>Materiales necesarios:</h2>
         <ul className={styles.materialList}>
-          {experimento.materiales.map(material => (
+          {experimento.materiales?.map(material => (
             <li key={material} className={styles.materialItem}>
               <span style={{ color: 'black' }}>{material}</span>
             </li>
@@ -126,14 +140,14 @@ function Experimento() {
         <div className={styles.hipotesis}>
           <h3>Preguntas Hipotéticas Iniciales:</h3>
           <ul>
-            {experimento.preguntas_iniciales_hipotesis.map(pregunta => (
+            {experimento.preguntas_iniciales_hipotesis?.map(pregunta => (
               <li key={pregunta}>{pregunta}</li>
             ))}
           </ul>
         </div>
       </div>
     ];
-    experimento.Pasos.forEach((paso, index) => {
+    experimento.Pasos?.forEach((paso, index) => {
       slides.push(
         <div key={`paso_${index}`}>
           <div className={styles.pasoContainer}>
@@ -149,7 +163,7 @@ function Experimento() {
         <div className={styles.conclusion}>
           <h3>Preguntas Finales para Conclusión:</h3>
           <ul>
-            {experimento.preguntas_finales_conclusion.map(pregunta => (
+            {experimento.preguntas_finales_conclusion?.map(pregunta => (
               <li key={pregunta}>{pregunta}</li>
             ))}
           </ul>
@@ -165,7 +179,7 @@ function Experimento() {
   };
 
   const nextSlide = () => {
-    if (pasoActual === experimento.Pasos.length + 4) {
+    if (pasoActual === experimento.Pasos?.length + 4) {
       // Si estamos en el último slide, puedes añadir aquí la lógica para manejarlo
     } else {
       sliderRef.current.slickNext();
@@ -213,7 +227,7 @@ function Experimento() {
       <canvas 
         ref={canvasRef} 
         id="canvas" 
-        className="galileo-canvas" 
+        className={styles.galileoCanvas} 
         width="1920" 
         height="1080"
         style={{ width: '90%', height: 'auto' }}
@@ -223,3 +237,4 @@ function Experimento() {
 }
 
 export default Experimento;
+

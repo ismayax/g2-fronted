@@ -9,7 +9,6 @@
   position: relative;
   overflow: hidden;
   z-index: 100;
-
 }
 
 .barra {
@@ -34,7 +33,7 @@
 
 .elemento {
   margin: 0;
-  font-size: 2.5em;
+  font-size: 250%;
   color: #79a981;
   width: 100%;
 }
@@ -69,12 +68,6 @@
   box-sizing: border-box;
 }
 
-.cuadro-container.dos-columnas {
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
 .cuadros {
   padding: 40px;
   border-radius: 50px;
@@ -99,7 +92,6 @@
   z-index: 10; /* Asegura que el canvas esté detrás de otros elementos */
 }
 
-
 .medio {
   margin-top: 10px;
 }
@@ -111,7 +103,7 @@
   width: 19%;
   height: auto;
   margin-right: 4%;
-} 
+}
 
 .contenido {
   padding: 20px;
@@ -137,17 +129,17 @@
   margin-bottom: 10px;
 }
 
-@media (max-width: 1023px){
+@media (max-width: 1023px) {
   .galileo-image {
     width: 25%;
     bottom: -5%;
   }
+
   .cuadros {
-    width: 45%;  
+    width: 45%;
     font-size: 1.5em;
-      padding: 20px;
-  } 
-   
+    padding: 20px;
+  }
 
   .contenido {
     padding: 15px;
@@ -162,13 +154,13 @@
   }
 }
 
-@media (min-width: 1024px) { 
+@media (min-width: 1024px) {
   .cuadros {
-    width: 45%;  
+    width: 45%;
     font-size: 1.5em;
-      padding: 20px;
-  } 
-  
+    padding: 20px;
+  }
+
   .galileo-image {
     width: 15%;
     bottom: -5%;
@@ -187,7 +179,7 @@
   }
 }
 
-@media (max-width: 530px) { 
+@media (max-width: 530px) {
   .barra {
     padding: 15px;
     flex-direction: row;
@@ -202,7 +194,7 @@
   }
 
   .cuadros {
-    width: 80%;  
+    width: 80%;
     font-size: 1.2em;
     padding: 20px;
   }
@@ -229,7 +221,10 @@
 
 canvas {
   position: fixed;
-  top: 5%;
-  left: 7%;
-  z-index: 1;  
+  top: 2%;
+  left: 40%;
+  z-index: 1;
+  transform: scaleX(-1); /* Voltea horizontalmente */
 }
+
+
