@@ -1,43 +1,62 @@
 .dashboard {
-    padding: 20px;
-  }
-  
-  .button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-decoration: none;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
-  .docentesList {
-    margin-top: 20px;
-  }
-  
-  .docenteItem {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .docenteInfo {
-    margin-bottom: 10px;
-  }
-  
-  .docenteActions {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .activate {
-    background-color: #28a745;
-  }
-  
-  .deactivate {
-    background-color: #dc3545;
-  }
+  padding: 20px;
+  background-color: #fff; /* Fondo blanco */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.backButton {
+  background-color: #79a981;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.docentesList {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+}
+
+.docenteItem {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.docenteInfo {
+  margin-bottom: 10px;
+}
+
+.docenteActions {
+  display: flex;
+  gap: 10px;
+}
+
+.activate {
+  background-color: #28a745;
+}
+
+.deactivate {
+  background-color: #dc3545;
+}

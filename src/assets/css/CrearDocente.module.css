@@ -11,8 +11,8 @@
 }
 
 .container {
-  width: 95%;
-  max-width: 1200px;
+  width: 50%; /* Ajustar el ancho al 50% */
+  max-width: 600px; /* Reducir el ancho máximo */
   margin: 0 auto;
   padding: 40px;
   border: 1px solid #ccc;
@@ -58,14 +58,14 @@ input, select {
 }
 
 .btnCreate {
-  padding: 15px 120px;
+  padding: 10px 80px; /* Reducir el tamaño del botón */
   background-color: #79a981;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px; /* Reducir el tamaño del texto */
 }
 
 .btnCreate:hover {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext'; // Asumiendo que tienes un contexto de autenticación configurado
 import styles from '../assets/css/AdminDocentes.module.css';
 
@@ -9,6 +9,7 @@ const AdminDocentes = () => {
   const [limiteDocentes, setLimiteDocentes] = useState(0);
   const db = getFirestore();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdminCentro = async () => {
@@ -18,7 +19,6 @@ const AdminDocentes = () => {
       }
 
       try {
-        console.log(`Fetching admin centro for user: ${user.uid}`);
         const adminCentroRef = doc(db, 'admincentro', user.uid);
         const adminCentroSnap = await getDoc(adminCentroRef);
 
@@ -28,15 +28,8 @@ const AdminDocentes = () => {
         }
 
         const adminCentroData = adminCentroSnap.data();
-        console.log('adminCentroData:', adminCentroData);
-        if (!adminCentroData.centro_id || adminCentroData.centro_id.length === 0) {
-          console.log('No centro_id found in admincentro data.');
-          return;
-        }
-
         const centroId = adminCentroData.centro_id[0];
-        console.log(`Fetching centro_educativo for centroId: ${centroId}`);
-        // Obtener el plan de suscripción del centro educativo
+
         const centroRef = doc(db, 'centros_educativos', centroId);
         const centroSnap = await getDoc(centroRef);
 
@@ -46,14 +39,8 @@ const AdminDocentes = () => {
         }
 
         const centroData = centroSnap.data();
-        console.log('centroData:', centroData);
-        if (!centroData.suscripcion_id || centroData.suscripcion_id.length === 0) {
-          console.log('No suscripcion_id found in centro_educativo data.');
-          return;
-        }
-
         const suscripcionId = centroData.suscripcion_id[0];
-        console.log(`Fetching suscripcion for suscripcionId: ${suscripcionId}`);
+
         const suscripcionRef = doc(db, 'suscripciones', suscripcionId);
         const suscripcionSnap = await getDoc(suscripcionRef);
 
@@ -63,15 +50,11 @@ const AdminDocentes = () => {
         }
 
         const suscripcionData = suscripcionSnap.data();
-        console.log('suscripcionData:', suscripcionData);
         setLimiteDocentes(suscripcionData.num_docentes);
 
-        // Obtener los docentes asociados a este centro_id
-        console.log(`Fetching docentes for centroId: ${centroId}`);
         const q = query(collection(db, 'docentes'), where('centro_id', 'array-contains', centroId));
         const querySnapshot = await getDocs(q);
         const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log('docentesList:', docentesList);
         setDocentes(docentesList);
       } catch (error) {
         console.error('Error fetching admin centro:', error);
@@ -101,28 +84,36 @@ const AdminDocentes = () => {
 
   return (
     <div className={styles.dashboard}>
-      <h1>Gestión de Docentes</h1>
-      <Link to="/crear-docente" className={styles.button}>Crear Nuevo Docente</Link>
-      <div className={styles.docentesList}>
-        {docentes.map(docente => (
-          <div key={docente.id} className={styles.docenteItem}>
-            <div className={styles.docenteInfo}>
-              <p><strong>Nombre:</strong> {docente.nombre}</p>
-              <p><strong>Email:</strong> {docente.email}</p>
-              <p><strong>Nivel:</strong> {docente.nivel}</p>
-              <p><strong>Activo:</strong> {docente.activo ? 'Sí' : 'No'}</p>
+      <div className={styles.header}>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>&larr;</button>
+        <h1>Información Centro</h1>
+      </div>
+      <div className={styles.content}>
+        <h2>Usuarios Docentes</h2>
+        <hr className={styles.separator} />
+        <div className={styles.docentesList}>
+          {docentes.map(docente => (
+            <div key={docente.id} className={styles.docenteItem}>
+              <div className={styles.docenteInfo}>
+                <p><strong>{docente.nombre}</strong></p>
+                <p>{docente.email}</p>
+                <p>{docente.nivel}</p>
+              </div>
+              <div className={styles.docenteActions}>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    checked={docente.activo}
+                    onChange={() => handleActivateDocente(docente.id, !docente.activo)}
+                  />
+                  <span className={styles.slider}></span>
+                </label>
+              </div>
             </div>
-            <div className={styles.docenteActions}>
-              <button
-                onClick={() => handleActivateDocente(docente.id, !docente.activo)}
-                className={`${styles.button} ${docente.activo ? styles.deactivate : styles.activate}`}
-              >
-                {docente.activo ? 'Desactivar' : 'Activar'}
-              </button>
-              <Link to={`/editar-docente/${docente.id}`} className={styles.button}>Editar</Link>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <p className={styles.limite}>Límite según plan: <span className={styles.limiteNumero}>{docentes.filter(doc => doc.activo).length}/{limiteDocentes}</span></p>
+        <Link to="/crear-docente" className={styles.crearButton}>Crear nuevo Usuario</Link>
       </div>
     </div>
   );
