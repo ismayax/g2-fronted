@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css"; 
 import { FaVolumeMute, FaVolumeUp, FaArrowLeft } from 'react-icons/fa';
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
+import { Rive, Layout } from '@rive-app/canvas';
 
 function Experimento() {
   const [experimento, setExperimento] = useState(null);
@@ -48,6 +49,10 @@ function Experimento() {
       speech.voice = voices.find(voice => voice.name === 'Google español');
       window.speechSynthesis.speak(speech);
       setIsSpeaking(true);
+
+      speech.onend = () => {
+        setIsSpeaking(false);
+      };
     }
   };
 
@@ -81,11 +86,11 @@ function Experimento() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const rive = new window.rive.Rive({
+    const rive = new Rive({
       src: galileoRive,
       canvas,
       autoplay: isSpeaking,
-      layout: new window.rive.Layout({
+      layout: new Layout({
         fit: 'cover',
         alignment: 'center'
       }),
@@ -237,4 +242,3 @@ function Experimento() {
 }
 
 export default Experimento;
-

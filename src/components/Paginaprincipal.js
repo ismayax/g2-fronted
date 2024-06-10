@@ -5,6 +5,7 @@ import BurguerButton from "./menudesple";
 import fondoImage from "../assets/img/laboratorio.jpg";
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
 import Chat from "./Chat";
+import { Rive, Layout } from '@rive-app/canvas';
 
 const Paginaprincipal = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,11 +28,11 @@ const Paginaprincipal = ({ userId }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const rive = new window.rive.Rive({
+    const rive = new Rive({
       src: galileoRive,
       canvas,
       autoplay: false,
-      layout: new window.rive.Layout({
+      layout: new Layout({
         fit: 'cover',
         alignment: 'center'
       }),

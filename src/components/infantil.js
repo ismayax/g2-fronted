@@ -4,18 +4,18 @@ import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioinfantil.jpg";
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
-
+import { Rive, Layout } from '@rive-app/canvas';
 
 const Infantil = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const rive = new window.rive.Rive({
+    const rive = new Rive({
       src: galileoRive,
       canvas,
       autoplay: false,
-      layout: new window.rive.Layout({
+      layout: new Layout({
         fit: 'cover',
         alignment: 'center'
       }),

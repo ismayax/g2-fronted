@@ -4,7 +4,7 @@ import { db } from './firebaseConfig';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import "../assets/css/Listaexperimentos.css";
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
-
+import { Rive, Layout } from '@rive-app/canvas';
 
 const Listaexperimentos = () => {
     const { grupo } = useParams();
@@ -37,20 +37,20 @@ const Listaexperimentos = () => {
 
     useEffect(() => {
         const canvas = canvasRef.current;
-        const rive = new window.rive.Rive({
-          src: galileoRive,
-          canvas,
-          autoplay: false,
-          layout: new window.rive.Layout({
-            fit: 'cover',
-            alignment: 'center'
-          }),
+        const rive = new Rive({
+            src: galileoRive,
+            canvas,
+            autoplay: false,
+            layout: new Layout({
+                fit: 'cover',
+                alignment: 'center'
+            }),
         });
-    
+
         return () => {
-          rive.stop();
+            rive.stop();
         };
-      }, []);
+    }, []);
 
     return (
         <div className="pagina-experimentos-container" style={{ backgroundImage: `url(${fondoImage})` }}>
@@ -77,14 +77,14 @@ const Listaexperimentos = () => {
                     <p>No hay actividades disponibles.</p>
                 )}
             </div>
-            <canvas 
-        ref={canvasRef} 
-        id="canvas" 
-        className="galileo-canvas" 
-        width="1920" 
-        height="1080"
-        style={{ width: '90%', height: 'auto' }}
-      ></canvas>      
+            <canvas
+                ref={canvasRef}
+                id="canvas"
+                className="galileo-canvas"
+                width="1920"
+                height="1080"
+                style={{ width: '90%', height: 'auto' }}
+            ></canvas>
         </div>
     );
 };

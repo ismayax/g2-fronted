@@ -1,23 +1,21 @@
-// Primaria.jsx (Ejemplo)
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "../assets/css/Cursosniveles.css";
 import "../assets/css/flechas.css";
 import fondoImage from "../assets/img/laboratorioprimaria.jpg";
 import galileoRive from '../assets/riv/galileo_1_sin_fondo.riv';
-
-
+import { Rive, Layout } from '@rive-app/canvas';
 
 const Primaria = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const rive = new window.rive.Rive({
+    const rive = new Rive({
       src: galileoRive,
       canvas,
       autoplay: false,
-      layout: new window.rive.Layout({
+      layout: new Layout({
         fit: 'cover',
         alignment: 'center'
       }),
@@ -56,7 +54,7 @@ const Primaria = () => {
         height="1080"
         style={{ width: '90%', height: 'auto' }}
       ></canvas>    
-      </div>
+    </div>
   );
 };
 
