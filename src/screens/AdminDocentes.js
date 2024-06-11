@@ -39,7 +39,7 @@ const AdminDocentes = () => {
         }
 
         const centroData = centroSnap.data();
-        const suscripcionId = centroData.suscripcion_id[0];
+        const suscripcionId = centroData.suscripcion_id;
 
         const suscripcionRef = doc(db, 'suscripciones', suscripcionId);
         const suscripcionSnap = await getDoc(suscripcionRef);
@@ -52,9 +52,14 @@ const AdminDocentes = () => {
         const suscripcionData = suscripcionSnap.data();
         setLimiteDocentes(suscripcionData.num_docentes);
 
-        const q = query(collection(db, 'docentes'), where('centro_id', 'array-contains', centroId));
-        const querySnapshot = await getDocs(q);
-        const docentesList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const docentesList = [];
+        for (const docenteId of centroData.docente_id) {
+          const docenteRef = doc(db, 'docentes', docenteId);
+          const docenteSnap = await getDoc(docenteRef);
+          if (docenteSnap.exists()) {
+            docentesList.push({ id: docenteSnap.id, ...docenteSnap.data() });
+          }
+        }
         setDocentes(docentesList);
       } catch (error) {
         console.error('Error fetching admin centro:', error);

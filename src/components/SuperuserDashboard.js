@@ -1,21 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import styles from "../assets/css/SuperuserDashboard.module.css"; 
+import { getAuth, deleteUser } from 'firebase/auth';
+import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import styles from "../assets/css/SuperuserDashboard.module.css";
 
 const db = getFirestore();
+const auth = getAuth();
 
 const SuperuserDashboard = () => {
   const [docentes, setDocentes] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [centros, setCentros] = useState({});
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [niveles, setNiveles] = useState([]);
   const [selectedNiveles, setSelectedNiveles] = useState([]);
-  const [subscription, setSubscription] = useState('');
+  const [suscripcion, setSuscripcion] = useState('');
   const [showDetails, setShowDetails] = useState({});
   const [showAdminDetails, setShowAdminDetails] = useState({});
   const navigate = useNavigate();
+
+  const nivelesCursos = [
+    '/actividades/infantil',
+    '/actividades/primaria',
+    '/actividades/secundaria',
+  ];
+
+  const rutasSuscripciones = [
+    'suscripciones/normal',
+    'suscripciones/premium',
+    'suscripciones/suscripcionesbasica',
+  ];
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,15 +41,24 @@ const SuperuserDashboard = () => {
       const adminsSnapshot = await getDocs(collection(db, 'admincentro'));
       const adminsList = adminsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setAdmins(adminsList);
-    };
-    fetchUsers();
-    
-    const fetchNiveles = async () => {
+
       const nivelesSnapshot = await getDocs(collection(db, 'actividades'));
       const nivelesList = nivelesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setNiveles(nivelesList);
+
+      const centrosData = {};
+      for (const admin of adminsList) {
+        if (admin.centro_id && admin.centro_id.length > 0) {
+          const centroId = admin.centro_id[0];
+          const centroDoc = await getDoc(doc(db, 'centros_educativos', centroId));
+          if (centroDoc.exists()) {
+            centrosData[centroId] = { id: centroId, ...centroDoc.data() };
+          }
+        }
+      }
+      setCentros(centrosData);
     };
-    fetchNiveles();
+    fetchUsers();
   }, []);
 
   const handleUpdateUser = async (e) => {
@@ -57,12 +81,26 @@ const SuperuserDashboard = () => {
     e.preventDefault();
     if (selectedAdmin) {
       try {
-        const adminRef = doc(db, 'admincentro', selectedAdmin.id);
-        const centroRef = doc(db, 'centros_educativos', selectedAdmin.id);
-        await updateDoc(centroRef, { suscripcion_id: subscription });
-        setAdmins(admins.map(admin => (admin.id === selectedAdmin.id ? { ...admin, suscripcion_id: subscription } : admin)));
+        const centroId = selectedAdmin.centro_id[0];
+        const centroRef = doc(db, 'centros_educativos', centroId);
+
+        const docSnapshot = await getDoc(centroRef);
+        if (docSnapshot.exists()) {
+          await updateDoc(centroRef, { suscripcion_id: [suscripcion] });
+        } else {
+          await setDoc(centroRef, { suscripcion_id: [suscripcion] });
+        }
+
+        setCentros({
+          ...centros,
+          [centroId]: {
+            ...centros[centroId],
+            suscripcion_id: [suscripcion]
+          }
+        });
+
         setSelectedAdmin(null);
-        setSubscription('');
+        setSuscripcion('');
         setShowAdminDetails({ ...showAdminDetails, [selectedAdmin.id]: false });
       } catch (error) {
         console.error('Error updating admin:', error);
@@ -72,7 +110,12 @@ const SuperuserDashboard = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await deleteDoc(doc(db, 'docentes', userId));
+      const userDoc = doc(db, 'docentes', userId);
+      await deleteDoc(userDoc);
+
+      const user = auth.currentUser;
+      await deleteUser(user);
+
       setDocentes(docentes.filter(user => user.id !== userId));
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -81,9 +124,20 @@ const SuperuserDashboard = () => {
 
   const handleDeleteAdmin = async (adminId) => {
     try {
-      await deleteDoc(doc(db, 'admincentro', adminId));
-      await deleteDoc(doc(db, 'centros_educativos', adminId));
-      setAdmins(admins.filter(admin => admin.id !== adminId));
+      const admin = admins.find(admin => admin.id === adminId);
+      const centroId = admin && admin.centro_id && admin.centro_id[0];
+      if (centroId) {
+        await deleteDoc(doc(db, 'admincentro', adminId));
+        await deleteDoc(doc(db, 'centros_educativos', centroId));
+
+        const user = auth.currentUser;
+        await deleteUser(user);
+
+        setAdmins(admins.filter(admin => admin.id !== adminId));
+        const updatedCentros = { ...centros };
+        delete updatedCentros[centroId];
+        setCentros(updatedCentros);
+      }
     } catch (error) {
       console.error('Error deleting admin:', error);
     }
@@ -93,14 +147,16 @@ const SuperuserDashboard = () => {
     const user = docentes.find(user => user.id === userId);
     setShowDetails(prevState => ({ ...prevState, [userId]: !prevState[userId] }));
     setSelectedUser(user);
-    setSelectedNiveles(user ? user.niveles : []);
+    setSelectedNiveles(user && user.niveles ? user.niveles : []);
   };
 
   const toggleAdminDetails = (adminId) => {
     const admin = admins.find(admin => admin.id === adminId);
+    const centroId = admin && admin.centro_id && admin.centro_id[0];
+    const centro = centros[centroId];
     setShowAdminDetails(prevState => ({ ...prevState, [adminId]: !prevState[adminId] }));
     setSelectedAdmin(admin);
-    setSubscription(admin ? admin.suscripcion_id : '');
+    setSuscripcion(centro && centro.suscripcion_id ? centro.suscripcion_id[0] : '');
   };
 
   const handleNivelChange = (nivelId) => {
@@ -109,6 +165,10 @@ const SuperuserDashboard = () => {
     } else {
       setSelectedNiveles([...selectedNiveles, nivelId]);
     }
+  };
+
+  const formatSuscripcionName = (suscripcion) => {
+    return suscripcion ? suscripcion.replace('suscripciones/', '') : '';
   };
 
   return (
@@ -130,16 +190,16 @@ const SuperuserDashboard = () => {
                     <p>Nombre: {user.nombre}</p>
                     <p>Niveles:</p>
                     <ul>
-                      {niveles.map(nivel => (
-                        <li key={nivel.id}>
+                      {nivelesCursos.map(nivel => (
+                        <li key={nivel}>
                           <label>
                             <input
                               type="checkbox"
-                              value={nivel.id}
-                              checked={selectedNiveles.includes(nivel.id)}
-                              onChange={() => handleNivelChange(nivel.id)}
+                              value={nivel}
+                              checked={selectedNiveles.includes(nivel)}
+                              onChange={() => handleNivelChange(nivel)}
                             />
-                            {nivel.nombre}
+                            {nivel.split('/').pop()}
                           </label>
                         </li>
                       ))}
@@ -163,18 +223,30 @@ const SuperuserDashboard = () => {
               <li key={admin.id} className={styles.userItem}>
                 <div className={styles.userHeader}>
                   <p>Email: {admin.email}</p>
+                  <p>Centro ID: {admin.centro_id ? admin.centro_id[0] : 'N/A'}</p>
+                  <p>Suscripción: {formatSuscripcionName(centros[admin.centro_id?.[0]]?.suscripcion_id?.[0])}</p>
                   <button onClick={() => toggleAdminDetails(admin.id)} className={styles.button}>Editar</button>
                 </div>
                 {showAdminDetails[admin.id] && (
                   <div className={styles.userDetails}>
-                    <p>Centro: {admin.centro_id}</p>
+                    <p>Centro: {admin.centro_id ? admin.centro_id[0] : 'N/A'}</p>
                     <form onSubmit={handleUpdateAdmin} className={styles.form}>
-                      <select value={subscription} onChange={(e) => setSubscription(e.target.value)} required className={styles.select}>
-                        <option value="" disabled>Seleccione un plan</option>
-                        <option value="suscripciones/normal">Normal</option>
-                        <option value="suscripciones/premium">Premium</option>
-                        <option value="suscripciones/suscripcionesbasica">Básica</option>
-                      </select>
+                      <ul>
+                        {rutasSuscripciones.map(ruta => (
+                          <li key={ruta}>
+                            <label>
+                              <input
+                                type="radio"
+                                name="suscripcion"
+                                value={ruta}
+                                checked={suscripcion === ruta}
+                                onChange={(e) => setSuscripcion(e.target.value)}
+                              />
+                              {formatSuscripcionName(ruta)}
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
                       <button type="submit" className={styles.button}>Confirmar Cambio</button>
                     </form>
                     <button onClick={() => handleDeleteAdmin(admin.id)} className={styles.deleteButton}>Eliminar</button>

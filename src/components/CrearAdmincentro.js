@@ -24,16 +24,7 @@ const CrearAdmincentro = () => {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      const nuevoAdminRef = doc(db, 'admincentro', user.uid);
-      await setDoc(nuevoAdminRef, {
-        email,
-        ciudad,
-        rol: 'admin'
-      });
-
+      // Crear el documento del centro educativo
       const nuevoCentroRef = doc(collection(db, 'centros_educativos'));
       await setDoc(nuevoCentroRef, {
         acepta_condiciones: true,
@@ -44,10 +35,23 @@ const CrearAdmincentro = () => {
         mensajes_enviados: [],
         suscripcion_id: tipoSuscripcion
       });
+      const centroId = nuevoCentroRef.id;
+      console.log("Documento centros_educativos creado:", centroId);
 
-      await updateDoc(nuevoAdminRef, {
-        centro_id: arrayUnion(nuevoCentroRef.id)
+      // Crear el usuario en Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("Usuario creado:", user.uid);
+
+      // Crear el documento del admincentro
+      const nuevoAdminRef = doc(db, 'admincentro', user.uid);
+      await setDoc(nuevoAdminRef, {
+        email,
+        ciudad,
+        rol: 'admin',
+        centro_id: [centroId] // Usar el ID del nuevo centro
       });
+      console.log("Documento admincentro creado:", nuevoAdminRef.id);
 
       navigate('/superuser-dashboard');
     } catch (error) {
