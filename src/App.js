@@ -19,7 +19,7 @@ import Politica from './components/politicas';
 import Terminos from './components/terminos';
 import Contactenos from './components/Contactenos';
 import SuperuserDashboard from './components/SuperuserDashboard';
-import UserDashboard from './components/UserDashboard';
+
 import AdminPanel from './screens/adminpanel';
 import CentroDashboard from './components/Actudocentes';
 import CrearDocente from './components/Creardocente';
@@ -83,9 +83,7 @@ function App() {
         <Route path="/ampliar-plan" element={<AdminAmpliarPlan />} />
       </Route>
 
-      <Route element={<PrivateRoute role="user" />}>
-        <Route path="/user-dashboard" element={<UserDashboard />} />
-      </Route>
+        
     </Routes>
   );
 }

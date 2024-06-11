@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from './AuthContext'; // Asumiendo que tienes un contexto de autenticación configurado
 import styles from '../assets/css/AdminDocentes.module.css';
 
@@ -39,7 +40,7 @@ const AdminDocentes = () => {
         }
 
         const centroData = centroSnap.data();
-        const suscripcionId = centroData.suscripcion_id;
+        const suscripcionId = centroData.suscripcion_id[0]; // Asegúrate de que esto es una cadena
 
         const suscripcionRef = doc(db, 'suscripciones', suscripcionId);
         const suscripcionSnap = await getDoc(suscripcionRef);
@@ -88,37 +89,36 @@ const AdminDocentes = () => {
   };
 
   return (
-    <div className={styles.dashboard}>
-      <div className={styles.header}>
+    <div className={styles.greenBackground}>
+      <div className={styles.container}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>&larr;</button>
-        <h1>Información Centro</h1>
-      </div>
-      <div className={styles.content}>
-        <h2>Usuarios Docentes</h2>
-        <hr className={styles.separator} />
-        <div className={styles.docentesList}>
-          {docentes.map(docente => (
-            <div key={docente.id} className={styles.docenteItem}>
-              <div className={styles.docenteInfo}>
-                <p><strong>{docente.nombre}</strong></p>
-                <p>{docente.email}</p>
-                <p>{docente.nivel}</p>
+        <h2>Información Centro</h2>
+        <div className={styles.content}>
+          <h2>Usuarios Docentes</h2>
+          <hr className={styles.separator} />
+          <div className={styles.docentesList}>
+            {docentes.map(docente => (
+              <div key={docente.id} className={styles.docenteItem}>
+                <div className={styles.docenteInfo}>
+                  <p><strong>{docente.nombre}</strong></p>
+                  <p>{docente.email}</p>
+                </div>
+                <div className={styles.docenteActions}>
+                  <label className={styles.switch}>
+                    <input
+                      type="checkbox"
+                      checked={docente.activo}
+                      onChange={() => handleActivateDocente(docente.id, !docente.activo)}
+                    />
+                    <span className={styles.slider}></span>
+                  </label>
+                </div>
               </div>
-              <div className={styles.docenteActions}>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={docente.activo}
-                    onChange={() => handleActivateDocente(docente.id, !docente.activo)}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <p className={styles.limite}>Límite según plan: <span className={styles.limiteNumero}>{docentes.filter(doc => doc.activo).length}/{limiteDocentes}</span></p>
+          <Link to="/crear-docente" className={styles.crearButton}>Crear nuevo Usuario</Link>
         </div>
-        <p className={styles.limite}>Límite según plan: <span className={styles.limiteNumero}>{docentes.filter(doc => doc.activo).length}/{limiteDocentes}</span></p>
-        <Link to="/crear-docente" className={styles.crearButton}>Crear nuevo Usuario</Link>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, deleteUser } from 'firebase/auth';
+import { getAuth, deleteUser, signOut } from 'firebase/auth';
 import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import styles from "../assets/css/SuperuserDashboard.module.css";
 
@@ -21,15 +21,15 @@ const SuperuserDashboard = () => {
   const navigate = useNavigate();
 
   const nivelesCursos = [
-    '/actividades/infantil',
-    '/actividades/primaria',
-    '/actividades/secundaria',
+    'infantil',
+    'primaria',
+    'secundaria',
   ];
 
   const rutasSuscripciones = [
-    'suscripciones/normal',
-    'suscripciones/premium',
-    'suscripciones/suscripcionesbasica',
+    'normal',
+    'premium',
+    'suscripcionesbasica',
   ];
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const SuperuserDashboard = () => {
     if (selectedUser) {
       try {
         const userRef = doc(db, 'docentes', selectedUser.id);
-        await updateDoc(userRef, { niveles: selectedNiveles });
+        await updateDoc(userRef, { niveles: selectedNiveles.map(nivel => `actividades/${nivel}`) });
         setDocentes(docentes.map(user => (user.id === selectedUser.id ? { ...user, niveles: selectedNiveles } : user)));
         setSelectedUser(null);
         setSelectedNiveles([]);
@@ -86,16 +86,16 @@ const SuperuserDashboard = () => {
 
         const docSnapshot = await getDoc(centroRef);
         if (docSnapshot.exists()) {
-          await updateDoc(centroRef, { suscripcion_id: [suscripcion] });
+          await updateDoc(centroRef, { suscripcion_id: [suscripcion.replace('suscripciones/', '')] });
         } else {
-          await setDoc(centroRef, { suscripcion_id: [suscripcion] });
+          await setDoc(centroRef, { suscripcion_id: [suscripcion.replace('suscripciones/', '')] });
         }
 
         setCentros({
           ...centros,
           [centroId]: {
             ...centros[centroId],
-            suscripcion_id: [suscripcion]
+            suscripcion_id: [suscripcion.replace('suscripciones/', '')]
           }
         });
 
@@ -147,7 +147,7 @@ const SuperuserDashboard = () => {
     const user = docentes.find(user => user.id === userId);
     setShowDetails(prevState => ({ ...prevState, [userId]: !prevState[userId] }));
     setSelectedUser(user);
-    setSelectedNiveles(user && user.niveles ? user.niveles : []);
+    setSelectedNiveles(user && user.niveles ? user.niveles.map(nivel => nivel.replace('actividades/', '')) : []);
   };
 
   const toggleAdminDetails = (adminId) => {
@@ -171,9 +171,19 @@ const SuperuserDashboard = () => {
     return suscripcion ? suscripcion.replace('suscripciones/', '') : '';
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <div className={styles.dashboard}>
       <h1 className={styles.title}>Centro Control</h1>
+      <button className={styles.logoutButton} onClick={handleLogout}>Cerrar Sesión</button>
 
       <div className={styles.columns}>
         <div className={styles.column}>
@@ -199,7 +209,7 @@ const SuperuserDashboard = () => {
                               checked={selectedNiveles.includes(nivel)}
                               onChange={() => handleNivelChange(nivel)}
                             />
-                            {nivel.split('/').pop()}
+                            {nivel}
                           </label>
                         </li>
                       ))}

@@ -1,0 +1,27 @@
+.nivelSelector {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+  }
+  
+  .selectorHeader {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  
+  .selectorOptions {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .selectorOptions label {
+    margin-bottom: 5px;
+  }
+  
+  .arrow {
+    font-size: 12px;
+  }
+  

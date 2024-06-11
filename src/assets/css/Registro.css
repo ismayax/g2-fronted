@@ -1,85 +1,86 @@
 /* Contenedor principal */
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #79A981;
-  }
-  
-  .form-register {
-    width: 400px;
-    background: #79A981;
-    padding: 30px;
-    margin: auto;
-    margin-top: 100px;
-    font-family: 'Calibri', sans-serif;
-    border-radius: 4px;
-    color: white;
-  }
-  
-  /* Estilos del encabezado */
-  .form-register h1 {
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 30px;
-  }
-  
-  /* Grupo de formularios */
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  /* Etiquetas */
-  .label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  /* Controles de entrada */
-  .controls {
-    width: 100%;
-    background: white;
-    padding: 10px;
-    border: 1px solid #1f53c5;
-    font-size: 18px;
-    font-family: 'Calibri', sans-serif;
-    margin-bottom: 10px;
-    border-radius: 4px;
-  }
-  
-  /* Párrafos */
-  .form-register p {
-    text-align: center;
-    font-size: 18px;
-    line-height: 1.4;
-  }
-  
-  /* Enlaces */
-  .form-register a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .form-register a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Botón de registro */
-  .form-register .boton {
-    width: 100%;
-    background: #1f53c5;
-    border: none;
-    padding: 12px;
-    color: white;
-    margin-top: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .form-register .boton:hover {
-    background: #163d8a;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #79A981;
+  margin: 0;
+}
+
+.form-register {
+  width: 400px; /* Ajusta el ancho del formulario */
+  background: #79A981;
+  padding: 30px;
+  margin: auto;
+  font-family: 'Calibri', sans-serif;
+  border-radius: 8px; /* Aumenta el borde redondeado */
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Agrega sombra */
+}
+
+/* Estilos del encabezado */
+.form-register h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 32px; /* Ajusta el tamaño de la fuente */
+}
+
+/* Etiquetas */
+.form-register label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Controles de entrada */
+.controls {
+  width: 100%;
+  background: white;
+  padding: 12px; /* Ajusta el padding */
+  border: 1px solid #1f53c5;
+  font-size: 16px; /* Ajusta el tamaño de la fuente */
+  font-family: 'Calibri', sans-serif;
+  margin-bottom: 15px; /* Ajusta el margen inferior */
+  border-radius: 4px;
+}
+
+/* Párrafos */
+.form-register p {
+  text-align: center;
+  font-size: 16px; /* Ajusta el tamaño de la fuente */
+  line-height: 1.4;
+}
+
+/* Enlaces */
+.form-register a {
+  color: white;
+  text-decoration: none;
+}
+
+.form-register a:hover {
+  text-decoration: underline;
+}
+
+/* Botón de registro */
+.form-register .boton {
+  width: 100%;
+  background: #79A981; /* Cambia el color del botón a verde */
+  border: none;
+  padding: 15px; /* Ajusta el padding */
+  color: white;
+  margin-top: 20px; /* Ajusta el margen superior */
+  font-size: 18px; /* Ajusta el tamaño de la fuente */
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.form-register .boton:hover {
+  background: #5e8566; /* Color de fondo al pasar el ratón */
+}
+
+/* Enlace de inicio de sesión */
+.login-link {
+  text-align: right;
+  margin-top: 10px;
+}

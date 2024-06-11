@@ -1,52 +1,62 @@
 .suscripcion-container {
-    font-family: Arial, sans-serif;
-    color: #333333; /* Gris 2 */
-  }
-  
-  .banner {
-    background-color: #79a981; /* Verde */
-    padding: 20px;
-    text-align: center;
-    color: white;
-  }
-  
-  .planes-container {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
-  }
-  
-  .plan {
-    border: 2px solid #9b9b9b; /* Gris 1 */
-    border-radius: 10px;
-    padding: 20px;
-    width: 30%;
-    text-align: center;
-  }
-  
-  .icono {
-    font-size: 50px;
-  }
-  
-  button {
-    background-color: #79a981; /* Verde */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  
-  button:hover {
-    background-color: #333333; /* Gris 2 */
-  }
-  
-  .plan h2 {
-    color: #79a981; /* Verde */
-  }
-  
-  .plan p {
-    color: #333333; /* Gris 2 */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #79A981;
+}
+
+.banner {
+  margin-bottom: 20px;
+}
+
+.banner h1 {
+  font-size: 2.5rem;
+  color: #fff;
+  text-align: center;
+}
+
+.planes-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.plan {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  width: 250px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.icono {
+  font-size: 3rem;
+}
+
+.plan h2 {
+  margin-top: 10px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.plan p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.plan button {
+  background-color: #79A981;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.plan button:hover {
+  background-color: #5e8566;
+}
