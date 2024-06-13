@@ -1,14 +1,46 @@
 import React from 'react';
-import styles from '../assets/css/AdminAmpliarPlan.module.css'; 
+import { useNavigate } from 'react-router-dom';
+import '../assets/css/PlanesSuscripcion.css'; // Importa el CSS para estilos
 
-const AdminAmpliarPlan = () => {
+function PlanesSuscripcion() {
+  const navigate = useNavigate();
+
+  const planes = [
+    { tipo: "basico", precio: 10, num_docentes: "3", icono: "🗓️" },
+    { tipo: "normal", precio: 15, num_docentes: "5", icono: "📆" },
+    { tipo: "premium", precio: 20, num_docentes: "20", icono: "📅" }
+  ];
+
+  const seleccionarPlan = (plan) => {
+    console.log(`Plan seleccionado: ${plan.tipo}`);
+    navigate('/pago'); 
+  };
+
+  const irAtras = () => {
+    navigate(-1); // Navega hacia atrás
+  };
+
   return (
-    <div className={styles.container}>
-      <h1>Ampliar Plan</h1>
-      <p>Aquí puedes ampliar el plan de suscripción del centro educativo.</p>
-      {/* Agrega el formulario o información adicional para ampliar el plan */}
+    <div className="greenBackground">
+      <div className="suscripcion-container">
+        <button className="back-button" onClick={irAtras}>←</button>
+        <div className="banner">
+          <h1>Elige tu plan de suscripción</h1>
+        </div>
+        <div className="planes-container">
+          {planes.map((plan) => (
+            <div key={plan.tipo} className="plan">
+              <div className="icono">{plan.icono}</div>
+              <h2>{plan.tipo}</h2>
+              <p>Precio total: {plan.precio}€</p>
+              <p>Número de docentes: {plan.num_docentes}</p>
+              <button onClick={() => seleccionarPlan(plan)}>Elegir Plan</button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default AdminAmpliarPlan;
+export default PlanesSuscripcion;

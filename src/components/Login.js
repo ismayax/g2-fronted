@@ -16,6 +16,7 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
+      console.log('Attempting to sign in...');
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
 

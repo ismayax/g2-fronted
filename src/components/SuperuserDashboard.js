@@ -113,7 +113,7 @@ const SuperuserDashboard = () => {
       const userDoc = doc(db, 'docentes', userId);
       await deleteDoc(userDoc);
 
-      const user = auth.currentUser;
+      const user = await auth.getUser(userId);
       await deleteUser(user);
 
       setDocentes(docentes.filter(user => user.id !== userId));
@@ -130,8 +130,11 @@ const SuperuserDashboard = () => {
         await deleteDoc(doc(db, 'admincentro', adminId));
         await deleteDoc(doc(db, 'centros_educativos', centroId));
 
-        const user = auth.currentUser;
-        await deleteUser(user);
+        // Obtener el usuario administrador para eliminarlo de Firebase Authentication
+        const userToDelete = await auth.getUser(adminId);
+        if (userToDelete && userToDelete.uid !== auth.currentUser.uid) {
+          await deleteUser(userToDelete);
+        }
 
         setAdmins(admins.filter(admin => admin.id !== adminId));
         const updatedCentros = { ...centros };

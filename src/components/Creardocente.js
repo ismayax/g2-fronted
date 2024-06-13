@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, updateDoc, getDoc, arrayUnion } from 'firebase/firestore';
 import styles from '../assets/css/Crearsupdo.module.css';
 import GreenBackgroundLayout from './greenBackground';
+import { useAuth } from '../screens/AuthContext'; // Importa el contexto de autenticación
 
 const Crearsupdo = () => {
   const [email, setEmail] = useState("");
@@ -11,21 +12,11 @@ const Crearsupdo = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [username, setUsername] = useState("");
   const [nivel, setNivel] = useState("");
-  const [centros, setCentros] = useState([]);
-  const [selectedCentro, setSelectedCentro] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
   const db = getFirestore();
-
-  useEffect(() => {
-    const fetchCentros = async () => {
-      const centrosSnapshot = await getDocs(collection(db, 'centros_educativos'));
-      const centrosList = centrosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setCentros(centrosList);
-    };
-    fetchCentros();
-  }, []);
+  const { user } = useAuth(); // Obtén el usuario autenticado desde el contexto
 
   const handleCreateDocente = async (event) => {
     event.preventDefault();
@@ -35,26 +26,49 @@ const Crearsupdo = () => {
     }
 
     try {
+      console.log("Creando usuario...");
+      // Crear usuario en Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const newUser = userCredential.user;
 
-      const nuevoDocenteRef = doc(db, 'docentes', user.uid);
+      console.log("Usuario creado:", newUser.uid);
+
+      // Obtener el centro_id del administrador logueado
+      const adminCentroRef = doc(db, 'admincentro', user.uid);
+      const adminCentroSnap = await getDoc(adminCentroRef);
+
+      if (!adminCentroSnap.exists()) {
+        throw new Error("No se encontró el centro educativo asociado al administrador.");
+      }
+
+      const adminCentroData = adminCentroSnap.data();
+      const centroId = adminCentroData.centro_id[0];
+
+      console.log("Centro ID:", centroId);
+
+      // Guardar los datos del nuevo docente
+      const nuevoDocenteRef = doc(db, 'docentes', newUser.uid);
       await setDoc(nuevoDocenteRef, {
         nombre: username,
         email,
         nivel,
         activo: false,
-        centro_id: [selectedCentro]
+        centro_id: [centroId]
       });
 
-      const centroEducativoRef = doc(db, 'centros_educativos', selectedCentro);
+      console.log("Docente guardado en Firestore");
+
+      // Actualizar la colección de 'centros_educativos' con el nuevo docente ID
+      const centroEducativoRef = doc(db, 'centros_educativos', centroId);
       await updateDoc(centroEducativoRef, {
-        docente_id: arrayUnion(user.uid)
+        docente_id: arrayUnion(newUser.uid)
       });
 
-      navigate('/superuser-dashboard');
+      console.log("Centro educativo actualizado con nuevo docente ID");
+
+      navigate('/admin-docentes');
     } catch (error) {
-      console.error("Error creating docente:", error);
+      console.error("Error creando docente:", error);
       setError(error.message);
     }
   };
@@ -99,20 +113,6 @@ const Crearsupdo = () => {
               <option value="infantil">Infantil</option>
               <option value="primaria">Primaria</option>
               <option value="secundaria">Secundaria</option>
-            </select>
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="centro">Centro Educativo</label>
-            <select
-              id="centro"
-              value={selectedCentro}
-              onChange={(e) => setSelectedCentro(e.target.value)}
-              required
-            >
-              <option value="">Seleccionar Centro</option>
-              {centros.map(centro => (
-                <option key={centro.id} value={centro.id}>{centro.nombre}</option>
-              ))}
             </select>
           </div>
           <div className={styles.formGroup}>
